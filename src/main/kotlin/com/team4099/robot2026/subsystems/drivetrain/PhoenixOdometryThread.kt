@@ -155,7 +155,7 @@ class PhoenixOdometryThread private constructor() : Thread() {
     val isCANFD
       get() =
           when (Constants.Universal.whoami) {
-                Constants.WHOAMI.CODE_CLONE -> CodeCloneTunerConstants
+                Constants.WHOAMI.CLONEBOT -> CodeCloneTunerConstants
               }
               .kCANBus
               .isNetworkFD

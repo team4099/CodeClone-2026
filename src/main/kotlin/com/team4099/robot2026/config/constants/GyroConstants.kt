@@ -7,18 +7,18 @@ object GyroConstants {
   val mountPitch
     get() =
         when (Constants.Universal.whoami) {
-          Constants.WHOAMI.CODE_CLONE -> 0.degrees
+          Constants.WHOAMI.CLONEBOT -> 0.degrees
         }
 
   val mountRoll
     get() =
         when (Constants.Universal.whoami) {
-          Constants.WHOAMI.CODE_CLONE -> 0.degrees
+          Constants.WHOAMI.CLONEBOT -> 0.degrees
         }
 
   val mountYaw
     get() =
         when (Constants.Universal.whoami) {
-          Constants.WHOAMI.CODE_CLONE -> 0.degrees
+          Constants.WHOAMI.CLONEBOT -> 0.degrees
         }
 }

@@ -41,7 +41,7 @@ object DrivetrainConstants {
   val tunerConstants
     get() =
         when (Constants.Universal.whoami) {
-          Constants.WHOAMI.CODE_CLONE -> CodeCloneTunerConstants
+          Constants.WHOAMI.CLONEBOT -> CodeCloneTunerConstants
         }
 
   const val TELEOP_TURNING_SPEED_PERCENT = 0.6
@@ -49,7 +49,7 @@ object DrivetrainConstants {
   val WHEEL_RADIUS: Length
     get() =
         when (Constants.Universal.whoami) {
-          Constants.WHOAMI.CODE_CLONE -> 2.027.inches
+          Constants.WHOAMI.CLONEBOT -> 2.027.inches
         }
 
   val DRIVETRAIN_LENGTH: Length
@@ -102,7 +102,7 @@ object DrivetrainConstants {
 
   val CURRENT_COF =
       when (Constants.Universal.whoami) {
-        Constants.WHOAMI.CODE_CLONE -> NITRILE_WHEEL_COF
+        Constants.WHOAMI.CLONEBOT -> NITRILE_WHEEL_COF
       }
 
   val INITIAL_SIM_POSE = Pose2d(3.meters, 3.meters, 0.radians).pose2d
@@ -216,19 +216,19 @@ object DrivetrainConstants {
     val DRIVE_KS
       get() =
           when (Constants.Universal.whoami) {
-            Constants.WHOAMI.CODE_CLONE -> 0.29.volts
+            Constants.WHOAMI.CLONEBOT -> 0.29.volts
           }
 
     val DRIVE_KV: VelocityFeedforward<Meter, Volt>
       get() =
           when (Constants.Universal.whoami) {
-            Constants.WHOAMI.CODE_CLONE -> 0.734832.volts / 1.0.meters.perSecond
+            Constants.WHOAMI.CLONEBOT -> 0.734832.volts / 1.0.meters.perSecond
           }
 
     val DRIVE_KA: AccelerationFeedforward<Meter, Volt>
       get() =
           when (Constants.Universal.whoami) {
-            Constants.WHOAMI.CODE_CLONE -> 0.084474.volts / 1.0.meters.perSecond.perSecond
+            Constants.WHOAMI.CLONEBOT -> 0.084474.volts / 1.0.meters.perSecond.perSecond
           }
 
     val SIM_DRIVE_KP = DRIVE_KP

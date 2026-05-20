@@ -61,7 +61,7 @@ object RobotContainer {
               poseSupplier = { drivetrain.pose })
 
       when (Constants.Universal.whoami) {
-        Constants.WHOAMI.CODE_CLONE -> {
+        Constants.WHOAMI.CLONEBOT -> {
           // TODO - instantiate real subsystems here!
         }
       }

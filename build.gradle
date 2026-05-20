@@ -234,7 +234,7 @@ createVersionFile.dependsOn(eventDeploy)
 
 def argSpec = [
 		robot: [
-				allowed: ["compbot", "alphabot", "testbot"],
+				allowed: ["clonebot"],
 				required: true
 		],
 		tuning: [

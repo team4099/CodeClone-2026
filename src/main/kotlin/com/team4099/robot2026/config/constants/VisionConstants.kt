@@ -32,7 +32,7 @@ object VisionConstants {
   val CAMERAS: Map<String, Pair<CameraIO.DetectionPipeline, Transform3d>>
     get() =
         when (Constants.Universal.whoami) {
-          WHOAMI.CODE_CLONE -> mapOf()
+          WHOAMI.CLONEBOT -> mapOf()
         }
 
   // x, y, θ

@@ -6,7 +6,6 @@ import com.pathplanner.lib.path.Waypoint
 import com.pathplanner.lib.util.DriveFeedforwards
 import com.team4099.lib.logging.LoggedTunableValue
 import com.team4099.robot2026.RobotContainer
-import com.team4099.robot2026.config.ControlBoard
 import com.team4099.robot2026.config.constants.Constants
 import com.team4099.robot2026.config.constants.DrivetrainConstants
 import com.team4099.robot2026.subsystems.drivetrain.Drive
@@ -16,7 +15,6 @@ import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.kinematics.ChassisSpeeds as WPIChassisSpeeds
 import edu.wpi.first.wpilibj.RobotBase
 import edu.wpi.first.wpilibj2.command.Command
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup
 import java.util.function.DoubleSupplier
 import java.util.function.Supplier
 import org.littletonrobotics.junction.Logger
@@ -28,7 +26,6 @@ import org.team4099.lib.pplib.PathPlannerHolonomicDriveController.Companion.Goal
 import org.team4099.lib.pplib.PathPlannerHolonomicDriveController.Companion.PathConstraints
 import org.team4099.lib.pplib.PathPlannerRotationPID
 import org.team4099.lib.pplib.PathPlannerTranslationPID
-import org.team4099.lib.smoothDeadband
 import org.team4099.lib.units.LinearVelocity
 import org.team4099.lib.units.base.Length
 import org.team4099.lib.units.base.inches
@@ -209,191 +206,6 @@ class DrivePathOTF(
   companion object {
     fun warmupCommand(): Command {
       return FollowPathCommand.warmupCommand()
-    }
-
-    fun allianceZoneToNeutralInLeftTrench(drivetrain: Drive): SequentialCommandGroup {
-      val returnCommand =
-          SequentialCommandGroup(
-              DrivePathOTF(
-                  drivetrain,
-                  { ControlBoard.forward.smoothDeadband(Constants.Joysticks.THROTTLE_DEADBAND) },
-                  { ControlBoard.strafe.smoothDeadband(Constants.Joysticks.THROTTLE_DEADBAND) },
-                  { ControlBoard.turn.smoothDeadband(Constants.Joysticks.TURN_DEADBAND) },
-                  { drivetrain.pose.pose2d },
-                  DrivetrainConstants.OTF_PATHS.LEFT_TO_NEUTRAL_1,
-                  0.0.degrees,
-                  GoalEndState(0.0.meters.perSecond, 0.degrees)),
-              //              DrivePathOTF(
-              //                  drivetrain,
-              //                  {
-              // ControlBoard.forward.smoothDeadband(Constants.Joysticks.THROTTLE_DEADBAND) },
-              //                  {
-              // ControlBoard.strafe.smoothDeadband(Constants.Joysticks.THROTTLE_DEADBAND) },
-              //                  {
-              // ControlBoard.turn.smoothDeadband(Constants.Joysticks.TURN_DEADBAND) },
-              //                  { drivetrain.pose.pose2d },
-              //                  DrivetrainConstants.OTF_PATHS.LEFT_TO_NEUTRAL_2,
-              //                  180.0.degrees,
-              //                  GoalEndState(0.0.meters.perSecond, 0.degrees))
-          )
-      returnCommand.name = "DrivePathOTFAllianceZoneToNeutralInLeftTrench"
-      return returnCommand
-    }
-
-    fun allianceZoneToNeutralInRightTrench(drivetrain: Drive): SequentialCommandGroup {
-      val returnCommand =
-          SequentialCommandGroup(
-              DrivePathOTF(
-                  drivetrain,
-                  { ControlBoard.forward.smoothDeadband(Constants.Joysticks.THROTTLE_DEADBAND) },
-                  { ControlBoard.strafe.smoothDeadband(Constants.Joysticks.THROTTLE_DEADBAND) },
-                  { ControlBoard.turn.smoothDeadband(Constants.Joysticks.TURN_DEADBAND) },
-                  { drivetrain.pose.pose2d },
-                  DrivetrainConstants.OTF_PATHS.RIGHT_TO_NEUTRAL_1,
-                  0.0.degrees,
-                  GoalEndState(0.0.meters.perSecond, 0.degrees)),
-              //              DrivePathOTF(
-              //                  drivetrain,
-              //                  {
-              // ControlBoard.forward.smoothDeadband(Constants.Joysticks.THROTTLE_DEADBAND) },
-              //                  {
-              // ControlBoard.strafe.smoothDeadband(Constants.Joysticks.THROTTLE_DEADBAND) },
-              //                  {
-              // ControlBoard.turn.smoothDeadband(Constants.Joysticks.TURN_DEADBAND) },
-              //                  { drivetrain.pose.pose2d },
-              //                  DrivetrainConstants.OTF_PATHS.RIGHT_TO_NEUTRAL_2,
-              //                  0.0.degrees,
-              //                  GoalEndState(0.0.meters.perSecond, 0.degrees)
-              //              ),
-          )
-      returnCommand.name = "DrivePathOTFAllianceZoneToNeutralInRightTrench"
-      return returnCommand
-    }
-
-    fun neutralZoneToAllianceInLeftTrench(drivetrain: Drive): SequentialCommandGroup {
-      val returnCommand =
-          SequentialCommandGroup(
-              DrivePathOTF(
-                  drivetrain,
-                  { ControlBoard.forward.smoothDeadband(Constants.Joysticks.THROTTLE_DEADBAND) },
-                  { ControlBoard.strafe.smoothDeadband(Constants.Joysticks.THROTTLE_DEADBAND) },
-                  { ControlBoard.turn.smoothDeadband(Constants.Joysticks.TURN_DEADBAND) },
-                  { drivetrain.pose.pose2d },
-                  DrivetrainConstants.OTF_PATHS.LEFT_TO_ALLIANCE_1,
-                  0.0.degrees,
-                  GoalEndState(0.0.meters.perSecond, 180.degrees)),
-              //              DrivePathOTF(
-              //                  drivetrain,
-              //                  {
-              // ControlBoard.forward.smoothDeadband(Constants.Joysticks.THROTTLE_DEADBAND) },
-              //                  {
-              // ControlBoard.strafe.smoothDeadband(Constants.Joysticks.THROTTLE_DEADBAND) },
-              //                  {
-              // ControlBoard.turn.smoothDeadband(Constants.Joysticks.TURN_DEADBAND) },
-              //                  { drivetrain.pose.pose2d },
-              //                  DrivetrainConstants.OTF_PATHS.LEFT_TO_ALLIANCE_2,
-              //                  0.0.degrees,
-              //                  GoalEndState(0.0.meters.perSecond, 0.degrees))
-          )
-      returnCommand.name = "DrivePathOTFNeutralZoneToAllianceInLeftTrench"
-      return returnCommand
-    }
-
-    fun neutralZoneToAllianceInRightTrench(drivetrain: Drive): SequentialCommandGroup {
-      val returnCommand =
-          SequentialCommandGroup(
-              DrivePathOTF(
-                  drivetrain,
-                  { ControlBoard.forward.smoothDeadband(Constants.Joysticks.THROTTLE_DEADBAND) },
-                  { ControlBoard.strafe.smoothDeadband(Constants.Joysticks.THROTTLE_DEADBAND) },
-                  { ControlBoard.turn.smoothDeadband(Constants.Joysticks.TURN_DEADBAND) },
-                  { drivetrain.pose.pose2d },
-                  DrivetrainConstants.OTF_PATHS.RIGHT_TO_ALLIANCE_1,
-                  0.0.degrees,
-                  GoalEndState(0.0.meters.perSecond, 180.degrees)),
-              //              DrivePathOTF(
-              //                  drivetrain,
-              //                  {
-              // ControlBoard.forward.smoothDeadband(Constants.Joysticks.THROTTLE_DEADBAND) },
-              //                  {
-              // ControlBoard.strafe.smoothDeadband(Constants.Joysticks.THROTTLE_DEADBAND) },
-              //                  {
-              // ControlBoard.turn.smoothDeadband(Constants.Joysticks.TURN_DEADBAND) },
-              //                  { drivetrain.pose.pose2d },
-              //                  DrivetrainConstants.OTF_PATHS.RIGHT_TO_ALLIANCE_2,
-              //                  0.0.degrees,
-              //                  GoalEndState(0.0.meters.perSecond, 0.degrees)),
-          )
-      returnCommand.name = "DrivePathOTFNeutralZoneToAllianceInRightTrench"
-      return returnCommand
-    }
-
-    fun alignClimbBottom(drivetrain: Drive): SequentialCommandGroup {
-      val returnCommand =
-          SequentialCommandGroup(
-              DrivePathOTF(
-                  drivetrain,
-                  { ControlBoard.forward.smoothDeadband(Constants.Joysticks.THROTTLE_DEADBAND) },
-                  { ControlBoard.strafe.smoothDeadband(Constants.Joysticks.THROTTLE_DEADBAND) },
-                  { ControlBoard.turn.smoothDeadband(Constants.Joysticks.TURN_DEADBAND) },
-                  { drivetrain.pose.pose2d },
-                  listOf(DrivetrainConstants.OTF_PATHS.CLIMB_BOTTOM.first),
-                  drivetrain.pose.rotation,
-                  GoalEndState(
-                      0.0.meters.perSecond,
-                      if (AllianceFlipUtil.shouldFlip()) -90.degrees else 90.degrees)),
-              //              DrivePathOTF(
-              //                  drivetrain,
-              //                  {
-              // ControlBoard.forward.smoothDeadband(Constants.Joysticks.THROTTLE_DEADBAND) },
-              //                  {
-              // ControlBoard.strafe.smoothDeadband(Constants.Joysticks.THROTTLE_DEADBAND) },
-              //                  {
-              // ControlBoard.turn.smoothDeadband(Constants.Joysticks.TURN_DEADBAND) },
-              //                  { drivetrain.pose.pose2d },
-              //                  listOf(DrivetrainConstants.OTF_PATHS.CLIMB_BOTTOM.second),
-              //                  drivetrain.pose.rotation.z,
-              //                  GoalEndState(0.0.meters.perSecond, if
-              // (AllianceFlipUtil.shouldFlip()) -90.degrees else 90.degrees),
-              //                  Tolerances(1.inches, 1.inches, 1.5.degrees))
-          )
-      returnCommand.name = "DrivePathOTFAlignClimbBottom"
-      return returnCommand
-    }
-
-    fun alignClimbTop(drivetrain: Drive): SequentialCommandGroup {
-      val returnCommand =
-          SequentialCommandGroup(
-              DrivePathOTF(
-                  drivetrain,
-                  { ControlBoard.forward.smoothDeadband(Constants.Joysticks.THROTTLE_DEADBAND) },
-                  { ControlBoard.strafe.smoothDeadband(Constants.Joysticks.THROTTLE_DEADBAND) },
-                  { ControlBoard.turn.smoothDeadband(Constants.Joysticks.TURN_DEADBAND) },
-                  { drivetrain.pose.pose2d },
-                  listOf(DrivetrainConstants.OTF_PATHS.CLIMB_TOP.first),
-                  drivetrain.pose.rotation,
-                  GoalEndState(
-                      0.0.meters.perSecond,
-                      if (AllianceFlipUtil.shouldFlip()) 90.degrees else -90.degrees)),
-              //              DrivePathOTF(
-              //                  drivetrain,
-              //                  {
-              // ControlBoard.forward.smoothDeadband(Constants.Joysticks.THROTTLE_DEADBAND) },
-              //                  {
-              // ControlBoard.strafe.smoothDeadband(Constants.Joysticks.THROTTLE_DEADBAND) },
-              //                  {
-              // ControlBoard.turn.smoothDeadband(Constants.Joysticks.TURN_DEADBAND) },
-              //                  { drivetrain.pose.pose2d },
-              //                  listOf(DrivetrainConstants.OTF_PATHS.CLIMB_TOP.second),
-              //                  drivetrain.pose.rotation.z,
-              //                  GoalEndState(
-              //                      0.0.meters.perSecond,
-              //                      if (AllianceFlipUtil.shouldFlip()) 90.degrees else
-              // -90.degrees),
-              //                  Tolerances(1.inches, 1.inches, 1.5.degrees))
-          )
-      returnCommand.name = "DrivePathOTFAlignClimbTop"
-      return returnCommand
     }
   }
 

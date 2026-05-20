@@ -42,7 +42,7 @@ object Constants {
   }
 
   enum class WHOAMI {
-    CODE_CLONE
+    CLONEBOT
   }
 
   object Tuning {
