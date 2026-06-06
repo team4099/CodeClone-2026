@@ -29,5 +29,8 @@ interface IntakeRollersIO{
         rollerAppliedVoltage = it.volts }
 
     }
+    fun updateInputs(inputs: RollerInputs) {}
+    fun setVoltage(voltage: ElectricalPotential) {}
+    
   }
 }
