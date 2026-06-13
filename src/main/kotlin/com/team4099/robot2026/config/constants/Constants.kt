@@ -12,6 +12,12 @@ import org.team4099.lib.units.milli
 import org.team4099.lib.units.perSecond
 
 object Constants {
+  object Lintake{
+    val LINTAKE_MOTOR_ID = 0
+  }
+  object Rollers{
+    val ROLLERS_MOTOR_ID = 1
+  }
   object Universal {
     val gravity = 9.81.meters.perSecond.perSecond
     val SIM_MODE = Tuning.SimType.SIM
