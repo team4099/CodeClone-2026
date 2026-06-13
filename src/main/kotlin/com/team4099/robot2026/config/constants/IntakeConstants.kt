@@ -1,5 +1,7 @@
 import org.team4099.lib.units.base.amps
+import org.team4099.lib.units.base.grams
 import org.team4099.lib.units.base.inches
+import org.team4099.lib.units.derived.meterSquared
 import org.team4099.lib.units.derived.volts
 import org.team4099.lib.units.perSecond
 
@@ -21,5 +23,6 @@ object IntakeConstants{
     val SUPPLY_CURRENT_LIMIT = 0.0.amps
     val GEAR_RATIO = 1.0 / 1.0
     val VOLTAGE_COMPENSATION = 12.0.volts
+    val MOMENT_OF_INERTIA = 1.0.grams.meterSquared
   }
 }
