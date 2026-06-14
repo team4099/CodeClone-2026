@@ -74,8 +74,8 @@ interface LinearIntakeIO{
   fun configFF(
     kG: ElectricalPotential,
     kS: StaticFeedforward<Volt>,
-    kV: VelocityFeedforward<Meter, Volt>,
-    kA: AccelerationFeedforward<Meter, Volt>
-  ) {}
+
+    ) {}
   fun setBrakeMode(brake: Boolean) {}
+  fun zeroEncoder(){}
 }
