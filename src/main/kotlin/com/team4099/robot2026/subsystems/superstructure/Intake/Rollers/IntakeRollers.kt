@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem
 import org.team4099.lib.units.derived.volts
 
 class IntakeRollers(private val io: IntakeRollersIO) : ControlledByStateMachine() {
-  var targetVoltage = 0.0.volts
+  private var targetVoltage = 0.0.volts
   val inputs = IntakeRollersIO.RollerInputs()
   var currentState = IntakeRollersState.UNINITIALIZED
   var currentRequest: Request.RollerRequest = Request.RollerRequest.Idle()
@@ -20,7 +20,7 @@ class IntakeRollers(private val io: IntakeRollersIO) : ControlledByStateMachine(
     }
   override fun onLoop(){
     io.updateInputs(inputs)
-    CustomLogger.processInputs("rollers", inputs)
+    CustomLogger.processInputs("Intake Rollers", inputs)
     var nextState = currentState
     when (currentState) {
       IntakeRollersState.UNINITIALIZED -> {
