@@ -13,8 +13,8 @@ class IntakeRollers(private val io: IntakeRollersIO) : ControlledByStateMachine(
   var currentRequest: Request.RollerRequest = Request.RollerRequest.Idle()
     set(value) {
       when(value) {
-        is Request.RollerRequest.OpenLoop -> targetVoltage = value.voltage
-        is Request.RollerRequest.Idle -> targetVoltage = IDLE_VOLTAGE
+        is Request.IntakeRollerRequest.OpenLoop -> targetVoltage = value.voltage
+        is Request.IntakeRollerRequest.Idle -> targetVoltage = IDLE_VOLTAGE
       }
       field = value
     }
@@ -47,10 +47,10 @@ class IntakeRollers(private val io: IntakeRollersIO) : ControlledByStateMachine(
       IDLE,
       UNINITIALIZED
     }
-    inline fun fromRequestToState(request: Request.RollerRequest): IntakeRollersState {
+    inline fun fromRequestToState(request: Request.IntakeRollerRequest): IntakeRollersState {
       return when (request) {
-        is Request.RollerRequest.Idle -> IntakeRollersState.IDLE
-        is Request.RollerRequest.OpenLoop -> IntakeRollersState.OPEN_LOOP
+        is Request.IntakeRollerRequest.Idle -> IntakeRollersState.IDLE
+        is Request.IntakeRollerRequest.OpenLoop -> IntakeRollersState.OPEN_LOOP
 
       }
     }

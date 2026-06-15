@@ -13,18 +13,18 @@ object LinearIntakeTunableValues {
   val kP = LoggedTunableValue("Lintake/kP",
     Pair({it.inVoltsPerInch},
       {it.volts.perInch}))
-  val kI = LoggedTunableValue("Lintake/kP",
+  val kI = LoggedTunableValue("Lintake/kI",
     Pair({it.inVoltsPerInchSeconds },
       {it.volts.perInchSeconds }))
 
-  val kD = LoggedTunableValue("Lintake/kP",
+  val kD = LoggedTunableValue("Lintake/kD",
     Pair({it.inVoltsPerInchPerSecond},
       {it.volts / 1.0.inches.perSecond}))
 
-  val kS = LoggedTunableValue("Lintake/kP",
+  val kS = LoggedTunableValue("Lintake/kS",
     Pair({it.inVolts},
       {it.volts}))
-  val kG = LoggedTunableValue("Lintake/kP",
+  val kG = LoggedTunableValue("Lintake/kG",
     Pair({it.inVolts},
       {it.volts}))
 }

@@ -5,9 +5,9 @@ import org.team4099.lib.units.derived.ElectricalPotential
 
 sealed interface Request {
   sealed interface SuperstructureRequest : Request {}
-  sealed interface RollerRequest : Request {
-    class Idle() : RollerRequest
-    class OpenLoop(val voltage: ElectricalPotential) : RollerRequest
+  sealed interface IntakeRollerRequest : Request {
+    class Idle() : IntakeRollerRequest
+    class OpenLoop(val voltage: ElectricalPotential) : IntakeRollerRequest
 
   }
   sealed interface LintakeRequest : Request {

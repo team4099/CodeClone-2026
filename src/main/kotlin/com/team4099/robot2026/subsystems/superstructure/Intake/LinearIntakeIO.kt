@@ -27,7 +27,7 @@ interface LinearIntakeIO{
 
   class LintakeIOInputs : LoggableInputs {
     var lintakeTemperature = 0.0.celsius
-    var lintakeStratorCurrent = 0.amps
+    var lintakeStatorCurrent = 0.amps
     var lintakeSupplyCurrent = 0.amps
     var lintakePosition = 0.inches
     var lintakeVelocity = 0.inches.perSecond
@@ -36,7 +36,7 @@ interface LinearIntakeIO{
 
     override fun toLog(table: LogTable?){
       table?.put("lintakeTemperatureCelsius", lintakeTemperature.inCelsius)
-      table?.put("lintakeStratorCurrentAmps", lintakeStratorCurrent.inAmperes)
+      table?.put("lintakeStatorCurrentAmps", lintakeStatorCurrent.inAmperes)
       table?.put("lintakeSupplyCurrentAmps", lintakeSupplyCurrent.inAmperes)
       table?.put("lintakePositionInches", lintakePosition.inInches)
       table?.put("lintakeVelocityInchesPerSec", lintakeVelocity.inInchesPerSecond)
@@ -47,8 +47,8 @@ interface LinearIntakeIO{
       table?.get("lintakeTemperatureCelsius", lintakeTemperature.inCelsius)?.let {
         lintakeTemperature = it.celsius
       }
-      table?.get("lintakeStatorCurrentAmps", lintakeStratorCurrent.inAmperes)?.let {
-        lintakeStratorCurrent = it.amps
+      table?.get("lintakeStatorCurrentAmps", lintakeStatorCurrent.inAmperes)?.let {
+        lintakeStatorCurrent = it.amps
       }
       table?.get("lintakeSupplyCurrentAmps", lintakeSupplyCurrent.inAmperes)?.let {
         lintakeSupplyCurrent = it.amps

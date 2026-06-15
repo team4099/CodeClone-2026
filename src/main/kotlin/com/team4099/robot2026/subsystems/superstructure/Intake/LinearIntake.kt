@@ -1,11 +1,11 @@
 
-import IntakeRollers.Companion.IntakeRollersState
+
 import com.team4099.robot2026.subsystems.superstructure.Request
 import com.team4099.robot2026.util.ControlledByStateMachine
 import com.team4099.robot2026.util.CustomLogger
 import edu.wpi.first.wpilibj.RobotBase
 import org.team4099.lib.units.base.inInches
-import org.team4099.lib.units.base.inches
+
 import org.team4099.lib.units.derived.inVolts
 import org.team4099.lib.units.derived.volts
 
@@ -22,8 +22,8 @@ class LinearIntake(private val io: LinearIntakeIO) : ControlledByStateMachine() 
       }
       field = value
     }
-  var targetVoltage = 0.0.volts
-  var targetPosition = IntakeConstants.LinearIntakeConstants.START_POSITION
+  private var targetVoltage = 0.0.volts
+  private var targetPosition = IntakeConstants.LinearIntakeConstants.START_POSITION
   init{
     if(RobotBase.isReal()){
       LinearIntakeTunableValues.kP.initDefault(
@@ -72,6 +72,22 @@ class LinearIntake(private val io: LinearIntakeIO) : ControlledByStateMachine() 
   }
 
   override fun onLoop() {
+    if (LinearIntakeTunableValues.kP.hasChanged() ||
+      LinearIntakeTunableValues.kI.hasChanged() ||
+      LinearIntakeTunableValues.kD.hasChanged()){
+      io.configPID(
+        LinearIntakeTunableValues.kP.get(),
+        LinearIntakeTunableValues.kI.get(),
+        LinearIntakeTunableValues.kD.get()
+      )
+    }
+    if(LinearIntakeTunableValues.kG.hasChanged() || LinearIntakeTunableValues.kS.hasChanged()){
+      io.configFF(
+        LinearIntakeTunableValues.kG.get(),
+        LinearIntakeTunableValues.kS.get()
+      )
+    }
+
     io.updateInputs(inputs)
     CustomLogger.processInputs("Lintake", inputs)
     CustomLogger.recordOutput("Lintake/CurrentState", currentState.name)
