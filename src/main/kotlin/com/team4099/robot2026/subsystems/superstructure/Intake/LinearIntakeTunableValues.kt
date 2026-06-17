@@ -20,5 +20,4 @@ object LinearIntakeTunableValues {
           "Lintake/kD", Pair({ it.inVoltsPerInchPerSecond }, { it.volts / 1.0.inches.perSecond }))
 
   val kS = LoggedTunableValue("Lintake/kS", Pair({ it.inVolts }, { it.volts }))
-  val kG = LoggedTunableValue("Lintake/kG", Pair({ it.inVolts }, { it.volts }))
 }

@@ -25,41 +25,32 @@ class LinearIntake(private val io: LinearIntakeIO) : ControlledByStateMachine() 
 
   init {
     if (RobotBase.isReal()) {
-      LinearIntakeTunableValues.kP.initDefault(IntakeConstants.LintakePID.REAL_KP)
-      LinearIntakeTunableValues.kI.initDefault(IntakeConstants.LintakePID.REAL_KI)
-      LinearIntakeTunableValues.kD.initDefault(IntakeConstants.LintakePID.REAL_KD)
-      LinearIntakeTunableValues.kS.initDefault(IntakeConstants.LintakePID.REAL_KS)
-      LinearIntakeTunableValues.kG.initDefault(IntakeConstants.LintakePID.REAL_KG)
+      io.configPID(
+          IntakeConstants.LintakePID.REAL_KP,
+          IntakeConstants.LintakePID.REAL_KI,
+          IntakeConstants.LintakePID.REAL_KD)
+      io.configFF(IntakeConstants.LintakePID.REAL_KS)
     } else {
-      LinearIntakeTunableValues.kP.initDefault(IntakeConstants.LintakePID.SIM_KP)
-      LinearIntakeTunableValues.kI.initDefault(IntakeConstants.LintakePID.SIM_KI)
-      LinearIntakeTunableValues.kD.initDefault(IntakeConstants.LintakePID.SIM_KD)
-      LinearIntakeTunableValues.kS.initDefault(IntakeConstants.LintakePID.SIM_KS)
-      LinearIntakeTunableValues.kG.initDefault(IntakeConstants.LintakePID.SIM_KG)
+      io.configPID(
+          IntakeConstants.LintakePID.SIM_KP,
+          IntakeConstants.LintakePID.SIM_KI,
+          IntakeConstants.LintakePID.SIM_KD)
+      io.configFF(IntakeConstants.LintakePID.SIM_KS)
     }
-    io.configPID(
-        LinearIntakeTunableValues.kP.get(),
-        LinearIntakeTunableValues.kI.get(),
-        LinearIntakeTunableValues.kD.get(),
-    )
-    io.configFF(
-        LinearIntakeTunableValues.kS.get(),
-        LinearIntakeTunableValues.kG.get(),
-    )
   }
 
   override fun onLoop() {
-    if (LinearIntakeTunableValues.kP.hasChanged() ||
-        LinearIntakeTunableValues.kI.hasChanged() ||
-        LinearIntakeTunableValues.kD.hasChanged()) {
-      io.configPID(
-          LinearIntakeTunableValues.kP.get(),
-          LinearIntakeTunableValues.kI.get(),
-          LinearIntakeTunableValues.kD.get())
-    }
-    if (LinearIntakeTunableValues.kG.hasChanged() || LinearIntakeTunableValues.kS.hasChanged()) {
-      io.configFF(LinearIntakeTunableValues.kG.get(), LinearIntakeTunableValues.kS.get())
-    }
+    // if (LinearIntakeTunableValues.kP.hasChanged() ||
+    //     LinearIntakeTunableValues.kI.hasChanged() ||
+    //      LinearIntakeTunableValues.kD.hasChanged()) {
+    //    io.configPID(
+    //       LinearIntakeTunableValues.kP.get(),
+    //        LinearIntakeTunableValues.kI.get(),
+    //        LinearIntakeTunableValues.kD.get())
+    //  }
+    //  if ( LinearIntakeTunableValues.kS.hasChanged()) {
+    //    io.configFF( LinearIntakeTunableValues.kS.get())
+    //  }
 
     io.updateInputs(inputs)
     CustomLogger.processInputs("Lintake", inputs)

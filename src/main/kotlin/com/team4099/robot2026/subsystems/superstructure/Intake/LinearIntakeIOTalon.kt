@@ -38,6 +38,7 @@ object LinearIntakeIOTalon : LinearIntakeIO {
   private val LintakeTalon: TalonFX = TalonFX(Constants.Lintake.LINTAKE_MOTOR_ID) // Create Motor
   private val motionMagicControl: MotionMagicVoltage = MotionMagicVoltage(-1337.degrees.inDegrees)
   private val configs: TalonFXConfiguration = TalonFXConfiguration()
+
   private val LintakeSensor =
       ctreLinearMechanismSensor(
           LintakeTalon,

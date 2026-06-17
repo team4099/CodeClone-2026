@@ -73,7 +73,6 @@ interface LinearIntakeIO {
   ) {}
 
   fun configFF(
-      kG: ElectricalPotential,
       kS: StaticFeedforward<Volt>,
   ) {}
 
