@@ -19,7 +19,6 @@ import org.team4099.lib.units.derived.DerivativeGain
 import org.team4099.lib.units.derived.ElectricalPotential
 import org.team4099.lib.units.derived.IntegralGain
 import org.team4099.lib.units.derived.ProportionalGain
-import org.team4099.lib.units.derived.StaticFeedforward
 import org.team4099.lib.units.derived.Volt
 import org.team4099.lib.units.derived.inVolts
 import org.team4099.lib.units.derived.volts
@@ -85,6 +84,4 @@ object LinearIntakeIOSim : LinearIntakeIO {
   ) {
     lintakePIDController.setPID(kP, kI, kD)
   }
-
-
 }

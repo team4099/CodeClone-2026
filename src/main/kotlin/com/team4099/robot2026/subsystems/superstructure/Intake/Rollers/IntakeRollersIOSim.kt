@@ -1,4 +1,3 @@
-
 import com.team4099.lib.math.clamp
 import com.team4099.robot2026.config.constants.Constants
 import edu.wpi.first.math.system.plant.DCMotor
@@ -9,7 +8,6 @@ import org.team4099.lib.units.base.celsius
 import org.team4099.lib.units.base.inSeconds
 import org.team4099.lib.units.derived.ElectricalPotential
 import org.team4099.lib.units.derived.inKilogramsMeterSquared
-import org.team4099.lib.units.derived.inVolts
 import org.team4099.lib.units.derived.rotations
 import org.team4099.lib.units.derived.volts
 import org.team4099.lib.units.perMinute
@@ -29,10 +27,10 @@ object IntakeRollersIOSim : IntakeRollersIO {
 
   override fun setVoltage(voltage: ElectricalPotential) {
     val clampedVoltage =
-      clamp(
-        voltage,
-        -IntakeConstants.RollerIntakeConstants.VOLTAGE_COMPENSATION,
-        IntakeConstants.RollerIntakeConstants.VOLTAGE_COMPENSATION)
+        clamp(
+            voltage,
+            -IntakeConstants.RollerIntakeConstants.VOLTAGE_COMPENSATION,
+            IntakeConstants.RollerIntakeConstants.VOLTAGE_COMPENSATION)
 
     appliedVoltage = clampedVoltage
   }
