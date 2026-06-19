@@ -1,3 +1,5 @@
+package com.team4099.robot2026.subsystems.superstructure.intake
+
 import com.team4099.lib.math.clamp
 import com.team4099.robot2026.config.constants.Constants
 import edu.wpi.first.math.system.plant.DCMotor
@@ -11,7 +13,6 @@ import org.team4099.lib.units.base.Meter
 import org.team4099.lib.units.base.amps
 import org.team4099.lib.units.base.celsius
 import org.team4099.lib.units.base.inGrams
-import org.team4099.lib.units.base.inInches
 import org.team4099.lib.units.base.inMeters
 import org.team4099.lib.units.base.inSeconds
 import org.team4099.lib.units.base.meters
@@ -29,7 +30,7 @@ object LinearIntakeIOSim : LinearIntakeIO {
           DCMotor.getKrakenX60(1),
           1.0 / IntakeConstants.LinearIntakeConstants.GEAR_RATIO,
           IntakeConstants.LinearIntakeConstants.LINTAKE_MASS.inGrams,
-          IntakeConstants.LinearIntakeConstants.DIAMETER.inInches,
+          IntakeConstants.LinearIntakeConstants.DIAMETER.inMeters,
           IntakeConstants.LinearIntakeConstants.FORWARD_EXTENSION_LIM.inMeters,
           IntakeConstants.LinearIntakeConstants.BACKMOST_EXTENSION_LIM.inMeters,
           false,

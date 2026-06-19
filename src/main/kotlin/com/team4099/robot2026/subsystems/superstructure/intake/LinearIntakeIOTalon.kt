@@ -1,5 +1,9 @@
+package com.team4099.robot2026.subsystems.superstructure.intake
+
+import IntakeRollersIOTalon.motorAcceleration
 import IntakeRollersIOTalon.motorVoltage
 import IntakeRollersIOTalon.temperatureSignal
+import com.ctre.phoenix6.BaseStatusSignal
 import com.ctre.phoenix6.StatusSignal
 import com.ctre.phoenix6.configs.TalonFXConfiguration
 import com.ctre.phoenix6.controls.MotionMagicVoltage
@@ -53,6 +57,8 @@ object LinearIntakeIOTalon : LinearIntakeIO {
   var rotorPositionSignal: StatusSignal<WPIAngle>
   var rotorVelocitySignal: StatusSignal<WPIAngularVelocity>
 
+  val voltageOut = VoltageOut(-1337.0)
+
   init {
     LintakeTalon.clearStickyFaults()
 
@@ -77,6 +83,7 @@ object LinearIntakeIOTalon : LinearIntakeIO {
     tempSignal = LintakeTalon.deviceTemp
 
     zeroEncoder()
+    LintakeTalon.configurator.apply(configs)
   }
 
   override fun configPID(
@@ -91,13 +98,8 @@ object LinearIntakeIOTalon : LinearIntakeIO {
     LintakeTalon.configurator.apply(configs)
   }
 
-  override fun configFF(
-      kG: ElectricalPotential,
-      kS: StaticFeedforward<Volt>,
-  ) {
-    configs.Slot0.kG = kG.inVolts
+  override fun configFF(kS: StaticFeedforward<Volt>) {
     configs.Slot0.kS = kS.inVolts
-
     LintakeTalon.configurator.apply(configs)
   }
 
@@ -111,7 +113,7 @@ object LinearIntakeIOTalon : LinearIntakeIO {
             targetVoltage,
             -IntakeConstants.LinearIntakeConstants.VOLTAGE_COMPENSATION,
             IntakeConstants.LinearIntakeConstants.VOLTAGE_COMPENSATION)
-    LintakeTalon.setControl(VoltageOut(clampedVoltage.inVolts))
+    LintakeTalon.setControl(voltageOut.withOutput(clampedVoltage.value))
   }
 
   override fun setPosition(position: Length) {
@@ -120,10 +122,24 @@ object LinearIntakeIOTalon : LinearIntakeIO {
   }
 
   override fun updateInputs(inputs: LinearIntakeIO.LintakeIOInputs) {
+    updateStatusSignals()
     inputs.lintakeVelocity = LintakeSensor.velocity
     inputs.lintakeAppliedVoltage = motorVoltage.valueAsDouble.volts
     inputs.lintakeStatorCurrent = LinearIntakeIOTalon.statorCurrentSignal.valueAsDouble.amps
     inputs.lintakeSupplyCurrent = LinearIntakeIOTalon.supplyCurrentSignal.valueAsDouble.amps
     inputs.lintakeTemperature = temperatureSignal.valueAsDouble.celsius
+    inputs.lintakePosition = LintakeSensor.position
+  }
+
+  fun updateStatusSignals() {
+    BaseStatusSignal.refreshAll(
+        supplyCurrentSignal,
+        statorCurrentSignal,
+        tempSignal,
+        motorAcceleration,
+        motorVoltage,
+        rotorPositionSignal,
+        rotorVelocitySignal,
+    )
   }
 }

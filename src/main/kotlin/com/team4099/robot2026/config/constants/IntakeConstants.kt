@@ -34,6 +34,7 @@ object IntakeConstants {
     val LINTAKE_MASS = 0.0.grams
     val FORWARD_EXTENSION_LIM = 0.0.inches
     val BACKMOST_EXTENSION_LIM = 0.0.inches
+    val POSITION_TOLERANCE = 0.25.inches
   }
 
   object RollerIntakeConstants {

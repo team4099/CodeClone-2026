@@ -1,3 +1,5 @@
+package com.team4099.robot2026.subsystems.superstructure.intake
+
 import com.team4099.robot2026.subsystems.superstructure.Request
 import com.team4099.robot2026.util.ControlledByStateMachine
 import com.team4099.robot2026.util.CustomLogger
@@ -20,8 +22,17 @@ class LinearIntake(private val io: LinearIntakeIO) : ControlledByStateMachine() 
       field = value
     }
 
-  private var targetVoltage = 0.0.volts
-  private var targetPosition = IntakeConstants.LinearIntakeConstants.START_POSITION
+  var targetVoltage = 0.0.volts
+    private set
+
+  var targetPosition = IntakeConstants.LinearIntakeConstants.START_POSITION
+    private set
+
+  var isAtTargetPosition = false
+    get() =
+        (currentRequest is Request.LintakeRequest.ClosedLoop &&
+            (inputs.lintakePosition - targetPosition).absoluteValue <=
+                IntakeConstants.LinearIntakeConstants.POSITION_TOLERANCE)
 
   init {
     if (RobotBase.isReal()) {
@@ -40,17 +51,6 @@ class LinearIntake(private val io: LinearIntakeIO) : ControlledByStateMachine() 
   }
 
   override fun onLoop() {
-    // if (LinearIntakeTunableValues.kP.hasChanged() ||
-    //     LinearIntakeTunableValues.kI.hasChanged() ||
-    //      LinearIntakeTunableValues.kD.hasChanged()) {
-    //    io.configPID(
-    //       LinearIntakeTunableValues.kP.get(),
-    //        LinearIntakeTunableValues.kI.get(),
-    //        LinearIntakeTunableValues.kD.get())
-    //  }
-    //  if ( LinearIntakeTunableValues.kS.hasChanged()) {
-    //    io.configFF( LinearIntakeTunableValues.kS.get())
-    //  }
 
     io.updateInputs(inputs)
     CustomLogger.processInputs("Lintake", inputs)
@@ -58,6 +58,7 @@ class LinearIntake(private val io: LinearIntakeIO) : ControlledByStateMachine() 
     CustomLogger.recordOutput("Lintake/CurrentRequest", currentRequest.javaClass.simpleName)
     CustomLogger.recordOutput("Lintake/TargetVoltage", targetVoltage.inVolts)
     CustomLogger.recordOutput("Lintake/TargetPosition", targetPosition.inInches)
+    CustomLogger.recordOutput("Lintake/isAtTargetPosition", isAtTargetPosition)
 
     var nextState = currentState
     when (currentState) {

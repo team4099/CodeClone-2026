@@ -1,3 +1,5 @@
+package com.team4099.robot2026.subsystems.superstructure.intake.rollers
+
 import org.littletonrobotics.junction.LogTable
 import org.littletonrobotics.junction.inputs.LoggableInputs
 import org.team4099.lib.units.base.amps
@@ -36,10 +38,10 @@ interface IntakeRollersIO {
       table?.get("rollerTempCelsius", rollerTemperature.inCelsius)?.let {
         rollerTemperature = it.celsius
       }
-      table?.get("rollerStatorCurrent", rollerStatorCurrent.inAmperes)?.let {
+      table?.get("rollerStatorCurrentAmps", rollerStatorCurrent.inAmperes)?.let {
         rollerStatorCurrent = it.amps
       }
-      table?.get("rollerSupplyCurrent", rollerSupplyCurrent.inAmperes)?.let {
+      table?.get("rollerSupplyCurrentAmps", rollerSupplyCurrent.inAmperes)?.let {
         rollerSupplyCurrent = it.amps
       }
 

@@ -1,18 +1,22 @@
-import IntakeConstants.RollerIntakeConstants.IDLE_VOLTAGE
+package com.team4099.robot2026.subsystems.superstructure.intake.rollers
+
 import com.team4099.robot2026.subsystems.superstructure.Request
 import com.team4099.robot2026.util.ControlledByStateMachine
 import com.team4099.robot2026.util.CustomLogger
 import org.team4099.lib.units.derived.volts
 
 class IntakeRollers(private val io: IntakeRollersIO) : ControlledByStateMachine() {
-  private var targetVoltage = 0.0.volts
+  var targetVoltage = 0.0.volts
+    private set
+
   val inputs = IntakeRollersIO.RollerInputs()
   var currentState = IntakeRollersState.UNINITIALIZED
   var currentRequest: Request.IntakeRollerRequest = Request.IntakeRollerRequest.Idle()
     set(value) {
       when (value) {
         is Request.IntakeRollerRequest.OpenLoop -> targetVoltage = value.voltage
-        is Request.IntakeRollerRequest.Idle -> targetVoltage = IDLE_VOLTAGE
+        is Request.IntakeRollerRequest.Idle ->
+            targetVoltage = IntakeConstants.RollerIntakeConstants.IDLE_VOLTAGE
       }
       field = value
     }
@@ -30,7 +34,7 @@ class IntakeRollers(private val io: IntakeRollersIO) : ControlledByStateMachine(
         nextState = fromRequestToState(currentRequest)
       }
       IntakeRollersState.IDLE -> {
-        io.setVoltage(IDLE_VOLTAGE)
+        io.setVoltage(IntakeConstants.RollerIntakeConstants.IDLE_VOLTAGE)
         nextState = fromRequestToState(currentRequest)
       }
     }

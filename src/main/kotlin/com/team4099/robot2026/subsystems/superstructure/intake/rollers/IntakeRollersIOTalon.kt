@@ -1,3 +1,6 @@
+package com.team4099.robot2026.subsystems.superstructure.intake.rollers
+
+import com.ctre.phoenix6.BaseStatusSignal
 import com.ctre.phoenix6.StatusSignal
 import com.ctre.phoenix6.configs.TalonFXConfiguration
 import com.ctre.phoenix6.controls.VoltageOut
@@ -15,7 +18,6 @@ import org.team4099.lib.units.base.celsius
 import org.team4099.lib.units.base.inAmperes
 import org.team4099.lib.units.ctreAngularMechanismSensor
 import org.team4099.lib.units.derived.ElectricalPotential
-import org.team4099.lib.units.derived.inVolts
 import org.team4099.lib.units.derived.rotations
 import org.team4099.lib.units.derived.volts
 import org.team4099.lib.units.perSecond
@@ -36,6 +38,7 @@ object IntakeRollersIOTalon : IntakeRollersIO {
   var motorVoltage: StatusSignal<WPIVolt>
   var motorAcceleration: StatusSignal<WPIAngularAcceleration>
   var motorVelocity: StatusSignal<WPIAngularVelocity>
+  val voltageOut = VoltageOut(-1337.0)
 
   init {
     rollerTalon.clearStickyFaults()
@@ -47,16 +50,18 @@ object IntakeRollersIOTalon : IntakeRollersIO {
     rollerConfig.CurrentLimits.SupplyCurrentLimitEnable = true
     rollerConfig.CurrentLimits.StatorCurrentLimitEnable = true
     rollerConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive
-
     supplyCurrentSignal = rollerTalon.supplyCurrent
     statorCurrentSignal = rollerTalon.statorCurrent
     temperatureSignal = rollerTalon.deviceTemp
     motorVelocity = rollerTalon.velocity
     motorAcceleration = rollerTalon.acceleration
     motorVoltage = rollerTalon.motorVoltage
+
+    rollerTalon.configurator.apply(rollerConfig)
   }
 
   override fun updateInputs(inputs: IntakeRollersIO.RollerInputs) {
+    refreshStatusSignal()
 
     inputs.rollerVelocity = rollerSensor.velocity
     inputs.rollerAppliedVoltage = motorVoltage.valueAsDouble.volts
@@ -68,12 +73,23 @@ object IntakeRollersIOTalon : IntakeRollersIO {
             IntakeConstants.RollerIntakeConstants.GEAR_RATIO
   }
 
+  fun refreshStatusSignal() {
+    BaseStatusSignal.refreshAll(
+        supplyCurrentSignal,
+        temperatureSignal,
+        statorCurrentSignal,
+        motorVoltage,
+        motorAcceleration,
+        motorVelocity,
+    )
+  }
+
   override fun setVoltage(voltage: ElectricalPotential) {
     val clampedVoltage =
         clamp(
             voltage,
             -IntakeConstants.RollerIntakeConstants.VOLTAGE_COMPENSATION,
             IntakeConstants.RollerIntakeConstants.VOLTAGE_COMPENSATION)
-    rollerTalon.setControl(VoltageOut(clampedVoltage.inVolts))
+    rollerTalon.setControl(voltageOut.withOutput(clampedVoltage.value))
   }
 }
