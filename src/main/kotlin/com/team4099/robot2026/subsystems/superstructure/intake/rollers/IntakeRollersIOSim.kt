@@ -45,5 +45,6 @@ object IntakeRollersIOSim : IntakeRollersIO {
     inputs.rollerStatorCurrent = rollersSim.currentDrawAmps.amps
     inputs.rollerSupplyCurrent = 0.0.amps
     inputs.rollerTemperature = 0.0.celsius
+    inputs.rollerAcceleration = rollersSim.angularVelocityRPM.rotations.perMinute.perMinute
   }
 }

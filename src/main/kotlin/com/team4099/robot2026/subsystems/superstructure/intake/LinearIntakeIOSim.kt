@@ -23,6 +23,7 @@ import org.team4099.lib.units.derived.ProportionalGain
 import org.team4099.lib.units.derived.Volt
 import org.team4099.lib.units.derived.inVolts
 import org.team4099.lib.units.derived.volts
+import org.team4099.lib.units.perSecond
 
 object LinearIntakeIOSim : LinearIntakeIO {
   private val lintakeSim: ElevatorSim =
@@ -54,6 +55,7 @@ object LinearIntakeIOSim : LinearIntakeIO {
     inputs.lintakeStatorCurrent = lintakeSim.currentDrawAmps.amps
     inputs.lintakeSupplyCurrent = 0.0.amps
     inputs.lintakeAppliedVoltage = lastAppliedVoltage
+    inputs.lintakeVelocity = lintakeSim.velocityMetersPerSecond.meters.perSecond
     RoboRioSim.setVInVoltage(
         BatterySim.calculateDefaultBatteryLoadedVoltage(lintakeSim.currentDrawAmps))
   }

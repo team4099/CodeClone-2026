@@ -1,8 +1,5 @@
 package com.team4099.robot2026.subsystems.superstructure.intake
 
-import IntakeRollersIOTalon.motorAcceleration
-import IntakeRollersIOTalon.motorVoltage
-import IntakeRollersIOTalon.temperatureSignal
 import com.ctre.phoenix6.BaseStatusSignal
 import com.ctre.phoenix6.StatusSignal
 import com.ctre.phoenix6.configs.TalonFXConfiguration
@@ -16,6 +13,7 @@ import edu.wpi.first.units.measure.Angle as WPIAngle
 import edu.wpi.first.units.measure.AngularVelocity as WPIAngularVelocity
 import edu.wpi.first.units.measure.Current as WPICurrent
 import edu.wpi.first.units.measure.Temperature as WPITemperature
+import edu.wpi.first.units.measure.Voltage
 import org.team4099.lib.units.base.Length
 import org.team4099.lib.units.base.Meter
 import org.team4099.lib.units.base.amps
@@ -41,6 +39,7 @@ import org.team4099.lib.units.inInchesPerSecondPerSecond
 object LinearIntakeIOTalon : LinearIntakeIO {
   private val LintakeTalon: TalonFX = TalonFX(Constants.Lintake.LINTAKE_MOTOR_ID) // Create Motor
   private val motionMagicControl: MotionMagicVoltage = MotionMagicVoltage(-1337.degrees.inDegrees)
+  val voltageOut = VoltageOut(-1337.0)
   private val configs: TalonFXConfiguration = TalonFXConfiguration()
 
   private val LintakeSensor =
@@ -56,8 +55,7 @@ object LinearIntakeIOTalon : LinearIntakeIO {
 
   var rotorPositionSignal: StatusSignal<WPIAngle>
   var rotorVelocitySignal: StatusSignal<WPIAngularVelocity>
-
-  val voltageOut = VoltageOut(-1337.0)
+  var motorVoltageSignal: StatusSignal<Voltage>
 
   init {
     LintakeTalon.clearStickyFaults()
@@ -81,6 +79,7 @@ object LinearIntakeIOTalon : LinearIntakeIO {
     statorCurrentSignal = LintakeTalon.statorCurrent
     supplyCurrentSignal = LintakeTalon.supplyCurrent
     tempSignal = LintakeTalon.deviceTemp
+    motorVoltageSignal = LintakeTalon.motorVoltage
 
     zeroEncoder()
     LintakeTalon.configurator.apply(configs)
@@ -124,10 +123,10 @@ object LinearIntakeIOTalon : LinearIntakeIO {
   override fun updateInputs(inputs: LinearIntakeIO.LintakeIOInputs) {
     updateStatusSignals()
     inputs.lintakeVelocity = LintakeSensor.velocity
-    inputs.lintakeAppliedVoltage = motorVoltage.valueAsDouble.volts
+    inputs.lintakeAppliedVoltage = motorVoltageSignal.valueAsDouble.volts
     inputs.lintakeStatorCurrent = LinearIntakeIOTalon.statorCurrentSignal.valueAsDouble.amps
     inputs.lintakeSupplyCurrent = LinearIntakeIOTalon.supplyCurrentSignal.valueAsDouble.amps
-    inputs.lintakeTemperature = temperatureSignal.valueAsDouble.celsius
+    inputs.lintakeTemperature = tempSignal.valueAsDouble.celsius
     inputs.lintakePosition = LintakeSensor.position
   }
 
@@ -136,10 +135,9 @@ object LinearIntakeIOTalon : LinearIntakeIO {
         supplyCurrentSignal,
         statorCurrentSignal,
         tempSignal,
-        motorAcceleration,
-        motorVoltage,
         rotorPositionSignal,
         rotorVelocitySignal,
+        motorVoltageSignal,
     )
   }
 }

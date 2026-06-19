@@ -51,11 +51,11 @@ interface IntakeRollersIO {
               rollerAcceleration.inRotationsPerMinutePerMinute)
           ?.let { rollerAcceleration = it.rotations.perMinute.perMinute }
 
-      table?.get("rollerVelocity", rollerVelocity.inRotationsPerMinute)?.let {
+      table?.get("rollerVelocityRotationsPerMin", rollerVelocity.inRotationsPerMinute)?.let {
         rollerVelocity = it.rotations.perMinute
       }
 
-      table?.get("rollerVoltage", rollerAppliedVoltage.inVolts)?.let {
+      table?.get("rollerAppliedVoltageVolts", rollerAppliedVoltage.inVolts)?.let {
         rollerAppliedVoltage = it.volts
       }
     }

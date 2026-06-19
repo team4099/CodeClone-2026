@@ -28,7 +28,7 @@ class LinearIntake(private val io: LinearIntakeIO) : ControlledByStateMachine() 
   var targetPosition = IntakeConstants.LinearIntakeConstants.START_POSITION
     private set
 
-  var isAtTargetPosition = false
+  val isAtTargetPosition: Boolean
     get() =
         (currentRequest is Request.LintakeRequest.ClosedLoop &&
             (inputs.lintakePosition - targetPosition).absoluteValue <=
