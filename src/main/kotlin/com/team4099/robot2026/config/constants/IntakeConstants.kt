@@ -23,8 +23,6 @@ object IntakeConstants {
 
   object LinearIntakeConstants {
     val CURRENT_LIMIT = 40.0.amps
-    val START_POSITION = 0.0.inches
-    val MANUAL_ZERO_POSITION = 0.inches
     val IDLE_VOLTAGE = 0.0.volts
     val GEAR_RATIO: Double = 1.0 / 1.0
     val VOLTAGE_COMPENSATION = 12.0.volts
@@ -32,9 +30,14 @@ object IntakeConstants {
     val MAX_ACCELERATION = 0.0.inches.perSecond.perSecond
     val MAX_VELOCITY = 0.0.inches.perSecond
     val LINTAKE_MASS = 0.0.grams
+  }
+
+  object LintakePosConstants {
+    val MANUAL_ZERO_POSITION = 0.inches
     val FORWARD_EXTENSION_LIM = 0.0.inches
     val BACKMOST_EXTENSION_LIM = 0.0.inches
     val POSITION_TOLERANCE = 0.25.inches
+    val START_POSITION = 0.0.inches
   }
 
   object RollerIntakeConstants {

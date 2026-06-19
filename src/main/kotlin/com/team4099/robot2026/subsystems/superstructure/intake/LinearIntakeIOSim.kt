@@ -32,10 +32,10 @@ object LinearIntakeIOSim : LinearIntakeIO {
           1.0 / IntakeConstants.LinearIntakeConstants.GEAR_RATIO,
           IntakeConstants.LinearIntakeConstants.LINTAKE_MASS.inGrams,
           IntakeConstants.LinearIntakeConstants.DIAMETER.inMeters,
-          IntakeConstants.LinearIntakeConstants.FORWARD_EXTENSION_LIM.inMeters,
-          IntakeConstants.LinearIntakeConstants.BACKMOST_EXTENSION_LIM.inMeters,
+          IntakeConstants.LintakePosConstants.FORWARD_EXTENSION_LIM.inMeters,
+          IntakeConstants.LintakePosConstants.BACKMOST_EXTENSION_LIM.inMeters,
           false,
-          IntakeConstants.LinearIntakeConstants.START_POSITION.inMeters)
+          IntakeConstants.LintakePosConstants.START_POSITION.inMeters)
 
   private var lastAppliedVoltage = 0.0.volts
   private var lintakePIDController =

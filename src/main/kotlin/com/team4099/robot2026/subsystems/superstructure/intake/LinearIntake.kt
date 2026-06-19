@@ -25,14 +25,14 @@ class LinearIntake(private val io: LinearIntakeIO) : ControlledByStateMachine() 
   var targetVoltage = 0.0.volts
     private set
 
-  var targetPosition = IntakeConstants.LinearIntakeConstants.START_POSITION
+  var targetPosition = IntakeConstants.LintakePosConstants.START_POSITION
     private set
 
   val isAtTargetPosition: Boolean
     get() =
         (currentRequest is Request.LintakeRequest.ClosedLoop &&
             (inputs.lintakePosition - targetPosition).absoluteValue <=
-                IntakeConstants.LinearIntakeConstants.POSITION_TOLERANCE)
+                IntakeConstants.LintakePosConstants.POSITION_TOLERANCE)
 
   init {
     if (RobotBase.isReal()) {
