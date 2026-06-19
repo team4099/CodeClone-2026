@@ -138,6 +138,6 @@ object LinearIntakeIOTalon : LinearIntakeIO {
         rotorPositionSignal,
         rotorVelocitySignal,
         motorVoltageSignal,
-    )
+    ) // need smth to commit after spotlessapply and cleanbuild to check checks
   }
 }
