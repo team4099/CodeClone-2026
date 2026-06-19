@@ -1,9 +1,11 @@
 import org.team4099.lib.units.base.amps
 import org.team4099.lib.units.base.grams
 import org.team4099.lib.units.base.inches
+import org.team4099.lib.units.base.meters
 import org.team4099.lib.units.base.seconds
 import org.team4099.lib.units.derived.meterSquared
 import org.team4099.lib.units.derived.volts
+import org.team4099.lib.units.milli
 import org.team4099.lib.units.perSecond
 
 object IntakeConstants {
@@ -24,17 +26,17 @@ object IntakeConstants {
   object LinearIntakeConstants {
     val CURRENT_LIMIT = 40.0.amps
     val IDLE_VOLTAGE = 0.0.volts
-    val GEAR_RATIO: Double = 1.0 / 1.0
+    val GEAR_RATIO: Double = (1.0 / 4.0) * (18.0 / 30.0) * (10.0 / 27.0)
     val VOLTAGE_COMPENSATION = 12.0.volts
-    val DIAMETER = 1.0.inches
+    val DIAMETER = (38.89375 * 2.0).milli.meters
     val MAX_ACCELERATION = 0.0.inches.perSecond.perSecond
     val MAX_VELOCITY = 0.0.inches.perSecond
-    val LINTAKE_MASS = 0.0.grams
+    val LINTAKE_MASS = 6803.89.grams
   }
 
   object LintakePosConstants {
-    val MANUAL_ZERO_POSITION = 0.inches
-    val FORWARD_EXTENSION_LIM = 0.0.inches
+
+    val FORWARD_EXTENSION_LIM = 14.5.inches
     val BACKMOST_EXTENSION_LIM = 0.0.inches
     val POSITION_TOLERANCE = 0.25.inches
     val START_POSITION = 0.0.inches
@@ -42,9 +44,9 @@ object IntakeConstants {
 
   object RollerIntakeConstants {
     val IDLE_VOLTAGE = 0.0.volts
-    val STATOR_CURRENT_LIMIT = 0.0.amps
-    val SUPPLY_CURRENT_LIMIT = 0.0.amps
-    val GEAR_RATIO = 1.0 / 1.0
+    val STATOR_CURRENT_LIMIT = 40.0.amps
+    val SUPPLY_CURRENT_LIMIT = 40.0.amps
+    val GEAR_RATIO = (16 / 58) * (58 / 34) * (34 / 48)
     val VOLTAGE_COMPENSATION = 12.0.volts
     val MOMENT_OF_INERTIA = 1.0.grams.meterSquared
   }

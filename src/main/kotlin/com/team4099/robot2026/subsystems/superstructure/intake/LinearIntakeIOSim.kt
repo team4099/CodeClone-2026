@@ -31,7 +31,7 @@ object LinearIntakeIOSim : LinearIntakeIO {
           DCMotor.getKrakenX60(1),
           1.0 / IntakeConstants.LinearIntakeConstants.GEAR_RATIO,
           IntakeConstants.LinearIntakeConstants.LINTAKE_MASS.inGrams,
-          IntakeConstants.LinearIntakeConstants.DIAMETER.inMeters,
+          IntakeConstants.LinearIntakeConstants.DIAMETER.inMeters / 2,
           IntakeConstants.LintakePosConstants.FORWARD_EXTENSION_LIM.inMeters,
           IntakeConstants.LintakePosConstants.BACKMOST_EXTENSION_LIM.inMeters,
           false,

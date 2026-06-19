@@ -46,7 +46,7 @@ object LinearIntakeIOTalon : LinearIntakeIO {
       ctreLinearMechanismSensor(
           LintakeTalon,
           IntakeConstants.LinearIntakeConstants.GEAR_RATIO,
-          IntakeConstants.LinearIntakeConstants.DIAMETER / 2,
+          IntakeConstants.LinearIntakeConstants.DIAMETER,
           IntakeConstants.LinearIntakeConstants.VOLTAGE_COMPENSATION)
 
   var statorCurrentSignal: StatusSignal<WPICurrent>
