@@ -32,11 +32,11 @@ import org.team4099.lib.units.perSecond
 object IndexerIOSim : IndexerIO {
     private val indexerSim = FlywheelSim(
         LinearSystemId.createFlywheelSystem(
-            DCMotor.getKrakenX60(2),
+            DCMotor.getKrakenX60Foc(5),
             IndexerConstants.MOMENT_OF_INERTIA.inKilogramsMeterSquared,
             1.0 / IndexerConstants.GEAR_RATIO,
         ),
-        DCMotor.getKrakenX60(2)
+        DCMotor.getKrakenX60Foc(5)
     )
 
     private val indexerPIDController =
