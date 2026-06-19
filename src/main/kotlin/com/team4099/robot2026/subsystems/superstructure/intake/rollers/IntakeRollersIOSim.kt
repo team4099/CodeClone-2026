@@ -10,9 +10,11 @@ import org.team4099.lib.units.base.celsius
 import org.team4099.lib.units.base.inSeconds
 import org.team4099.lib.units.derived.ElectricalPotential
 import org.team4099.lib.units.derived.inKilogramsMeterSquared
+import org.team4099.lib.units.derived.radians
 import org.team4099.lib.units.derived.rotations
 import org.team4099.lib.units.derived.volts
 import org.team4099.lib.units.perMinute
+import org.team4099.lib.units.perSecond
 
 object IntakeRollersIOSim : IntakeRollersIO {
   val rollersSim =
@@ -45,6 +47,7 @@ object IntakeRollersIOSim : IntakeRollersIO {
     inputs.rollerStatorCurrent = rollersSim.currentDrawAmps.amps
     inputs.rollerSupplyCurrent = 0.0.amps
     inputs.rollerTemperature = 0.0.celsius
-    inputs.rollerAcceleration = rollersSim.angularVelocityRPM.rotations.perMinute.perMinute
+    inputs.rollerAcceleration =
+        rollersSim.angularAccelerationRadPerSecSq.radians.perSecond.perSecond
   }
 }

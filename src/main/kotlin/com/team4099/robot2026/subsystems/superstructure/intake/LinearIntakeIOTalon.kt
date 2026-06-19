@@ -46,7 +46,7 @@ object LinearIntakeIOTalon : LinearIntakeIO {
       ctreLinearMechanismSensor(
           LintakeTalon,
           IntakeConstants.LinearIntakeConstants.GEAR_RATIO,
-          IntakeConstants.LinearIntakeConstants.DIAMETER,
+          IntakeConstants.LinearIntakeConstants.DIAMETER / 2,
           IntakeConstants.LinearIntakeConstants.VOLTAGE_COMPENSATION)
 
   var statorCurrentSignal: StatusSignal<WPICurrent>
@@ -138,6 +138,10 @@ object LinearIntakeIOTalon : LinearIntakeIO {
         rotorPositionSignal,
         rotorVelocitySignal,
         motorVoltageSignal,
-    ) // need smth to commit after spotlessapply and cleanbuild to check checks
+    )
+  }
+
+  override fun setBrakeMode(brake: Boolean) {
+    LintakeTalon.setNeutralMode(if (brake) NeutralModeValue.Brake else NeutralModeValue.Coast)
   }
 }
