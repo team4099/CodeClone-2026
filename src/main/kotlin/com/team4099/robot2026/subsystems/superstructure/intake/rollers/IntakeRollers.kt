@@ -3,6 +3,7 @@ package com.team4099.robot2026.subsystems.superstructure.intake.rollers
 import com.team4099.robot2026.subsystems.superstructure.Request
 import com.team4099.robot2026.util.ControlledByStateMachine
 import com.team4099.robot2026.util.CustomLogger
+import org.team4099.lib.units.derived.inVolts
 import org.team4099.lib.units.derived.volts
 
 class IntakeRollers(private val io: IntakeRollersIO) : ControlledByStateMachine() {
@@ -24,6 +25,9 @@ class IntakeRollers(private val io: IntakeRollersIO) : ControlledByStateMachine(
   override fun onLoop() {
     io.updateInputs(inputs)
     CustomLogger.processInputs("Intake Rollers", inputs)
+    CustomLogger.recordOutput("IntakeRollers/CurrentState", currentState.name)
+    CustomLogger.recordOutput("IntakeRollers/CurrentRequest", currentRequest.javaClass.simpleName)
+    CustomLogger.recordOutput("IntakeRollers/TargetVoltage", targetVoltage.inVolts)
     var nextState = currentState
     when (currentState) {
       IntakeRollersState.UNINITIALIZED -> {

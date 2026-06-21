@@ -25,7 +25,8 @@ object IntakeConstants {
   }
 
   object LinearIntakeConstants {
-    val CURRENT_LIMIT = 40.0.amps
+    val STATOR_CURRENT_LIMIT = 40.0.amps
+    val SUPPLY_CURRENT_LIMIT = 40.0.amps
     val IDLE_VOLTAGE = 0.0.volts
     val GEAR_RATIO: Double = (1.0 / 4.0) * (18.0 / 30.0) * (10.0 / 27.0)
     val VOLTAGE_COMPENSATION = 12.0.volts

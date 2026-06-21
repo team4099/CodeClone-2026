@@ -61,9 +61,9 @@ object LinearIntakeIOTalon : LinearIntakeIO {
     LintakeTalon.clearStickyFaults()
 
     configs.CurrentLimits.SupplyCurrentLimit =
-        IntakeConstants.LinearIntakeConstants.CURRENT_LIMIT.inAmperes
+        IntakeConstants.LinearIntakeConstants.SUPPLY_CURRENT_LIMIT.inAmperes
     configs.CurrentLimits.StatorCurrentLimit =
-        IntakeConstants.LinearIntakeConstants.CURRENT_LIMIT.inAmperes
+        IntakeConstants.LinearIntakeConstants.STATOR_CURRENT_LIMIT.inAmperes
     configs.CurrentLimits.SupplyCurrentLimitEnable = true
     configs.CurrentLimits.StatorCurrentLimitEnable = true
     configs.MotorOutput.NeutralMode = NeutralModeValue.Brake
