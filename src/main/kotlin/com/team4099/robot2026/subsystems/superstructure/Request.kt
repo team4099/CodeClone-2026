@@ -8,9 +8,11 @@ sealed interface Request {
 
   sealed interface IndexerRequest : Request {
     class Idle() : IndexerRequest
-
     class OpenLoop(val voltage: ElectricalPotential) : IndexerRequest
+  }
 
-    class TargetVelocity(val velocity: AngularVelocity) : IndexerRequest
+  sealed interface FeederRequest : Request {
+    class Idle() : FeederRequest
+    class OpenLoop(val voltage: ElectricalPotential) : FeederRequest
   }
 }

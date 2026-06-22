@@ -33,11 +33,11 @@ object IndexerIOSim : IndexerIO {
   private val indexerSim =
       FlywheelSim(
           LinearSystemId.createFlywheelSystem(
-              DCMotor.getKrakenX60Foc(5),
+              DCMotor.getKrakenX44Foc(4),
               IndexerConstants.MOMENT_OF_INERTIA.inKilogramsMeterSquared,
               1.0 / IndexerConstants.GEAR_RATIO,
           ),
-          DCMotor.getKrakenX60Foc(5))
+          DCMotor.getKrakenX44Foc(4))
 
   private val indexerPIDController =
       PIDController(
@@ -57,15 +57,6 @@ object IndexerIOSim : IndexerIO {
     inputs.floorIndexerStatorCurrent = indexerSim.currentDrawAmps.amps
     inputs.floorIndexerTorqueCurrent = 0.0.amps
     inputs.floorIndexerTemperature = 0.0.celsius
-
-    inputs.feedWheelsIndexerVelocity = indexerSim.angularVelocityRadPerSec.radians.perSecond
-    inputs.feedWheelsIndexerAcceleration =
-        indexerSim.angularAccelerationRadPerSecSq.radians.perSecond.perSecond
-    inputs.feedWheelsIndexerAppliedVoltage = appliedVoltage
-    inputs.feedWheelsIndexerSupplyCurrent = 0.0.amps
-    inputs.feedWheelsIndexerStatorCurrent = indexerSim.currentDrawAmps.amps
-    inputs.feedWheelsIndexerTorqueCurrent = 0.0.amps
-    inputs.feedWheelsIndexerTemperature = 0.0.celsius
 
     inputs.sideRollerIndexerVelocity = indexerSim.angularVelocityRadPerSec.radians.perSecond
     inputs.sideRollerIndexerAcceleration =

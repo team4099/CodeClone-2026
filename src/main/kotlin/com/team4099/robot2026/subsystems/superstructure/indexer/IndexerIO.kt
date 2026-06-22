@@ -36,14 +36,6 @@ interface IndexerIO {
     var floorIndexerStatorCurrent = 0.0.amps
     var floorIndexerTorqueCurrent = 0.0.amps
 
-    var feedWheelsIndexerVelocity = 0.0.rotations.perMinute
-    var feedWheelsIndexerAcceleration = 0.0.rotations.perMinute.perMinute
-    var feedWheelsIndexerTemperature = 0.0.celsius
-    var feedWheelsIndexerAppliedVoltage = 0.0.volts
-    var feedWheelsIndexerSupplyCurrent = 0.0.amps
-    var feedWheelsIndexerStatorCurrent = 0.0.amps
-    var feedWheelsIndexerTorqueCurrent = 0.0.amps
-
     var sideRollerIndexerVelocity = 0.0.rotations.perMinute
     var sideRollerIndexerAcceleration = 0.0.rotations.perMinute.perMinute
     var sideRollerIndexerTemperature = 0.0.celsius
@@ -77,16 +69,6 @@ interface IndexerIO {
       table.put("floorIndexerTorqueCurrentAmps", floorIndexerTorqueCurrent.inAmperes)
       table.put("floorIndexerAppliedVoltageVolts", floorIndexerAppliedVoltage.inVolts)
       table.put("floorIndexerTemperatureCelsius", floorIndexerTemperature.inCelsius)
-
-      table.put("feedWheelsIndexerVelocityRPM", feedWheelsIndexerVelocity.inRotationsPerMinute)
-      table.put(
-          "feedWheelsIndexerAccelerationRPMPM",
-          feedWheelsIndexerAcceleration.inRotationsPerMinutePerMinute)
-      table.put("feedWheelsIndexerSupplyCurrentAmps", feedWheelsIndexerSupplyCurrent.inAmperes)
-      table.put("feedWheelsIndexerStatorCurrentAmps", feedWheelsIndexerStatorCurrent.inAmperes)
-      table.put("feedWheelsIndexerTorqueCurrentAmps", feedWheelsIndexerTorqueCurrent.inAmperes)
-      table.put("feedWheelsIndexerAppliedVoltageVolts", feedWheelsIndexerAppliedVoltage.inVolts)
-      table.put("feedWheelsIndexerTemperatureCelsius", feedWheelsIndexerTemperature.inCelsius)
 
       table.put("sideRollerIndexerVelocityRPM", sideRollerIndexerVelocity.inRotationsPerMinute)
       table.put(
@@ -142,30 +124,6 @@ interface IndexerIO {
       }
       table.get("floorIndexerTemperatureCelsius", floorIndexerTemperature.inCelsius).let {
         floorIndexerTemperature = it.celsius
-      }
-
-      table
-          .get("feedWheelsIndexerVelocityRPM", feedWheelsIndexerVelocity.inRotationsPerMinute)
-          .let { feedWheelsIndexerVelocity = it.rotations.perMinute }
-      table
-          .get(
-              "feedWheelsIndexerAccelerationRPMPM",
-              feedWheelsIndexerAcceleration.inRotationsPerMinutePerMinute)
-          .let { feedWheelsIndexerAcceleration = it.rotations.perMinute.perMinute }
-      table
-          .get("feedWheelsIndexerSupplyCurrentAmps", feedWheelsIndexerSupplyCurrent.inAmperes)
-          .let { feedWheelsIndexerSupplyCurrent = it.amps }
-      table
-          .get("feedWheelsIndexerStatorCurrentAmps", feedWheelsIndexerStatorCurrent.inAmperes)
-          .let { feedWheelsIndexerStatorCurrent = it.amps }
-      table
-          .get("feedWheelsIndexerTorqueCurrentAmps", feedWheelsIndexerTorqueCurrent.inAmperes)
-          .let { feedWheelsIndexerTorqueCurrent = it.amps }
-      table
-          .get("feedWheelsIndexerAppliedVoltageVolts", feedWheelsIndexerAppliedVoltage.inVolts)
-          .let { feedWheelsIndexerAppliedVoltage = it.volts }
-      table.get("feedWheelsIndexerTemperatureCelsius", feedWheelsIndexerTemperature.inCelsius).let {
-        feedWheelsIndexerTemperature = it.celsius
       }
 
       table
@@ -258,18 +216,6 @@ interface IndexerIO {
       kS: StaticFeedforward<Volt>,
       kV: VelocityFeedforward<Radian, Volt>,
       kA: AccelerationFeedforward<Radian, Volt>
-  ) {}
-
-  fun configurePIDCurrent(
-      kP: ProportionalGain<Fraction<Radian, Second>, Ampere>,
-      kI: IntegralGain<Fraction<Radian, Second>, Ampere>,
-      kD: DerivativeGain<Fraction<Radian, Second>, Ampere>
-  ) {}
-
-  fun configureFFCurrent(
-      kS: StaticFeedforward<Ampere>,
-      kV: VelocityFeedforward<Radian, Ampere>,
-      kA: AccelerationFeedforward<Radian, Ampere>
   ) {}
 
   fun setBrakeMode(brake: Boolean) {}
