@@ -25,12 +25,12 @@ import org.team4099.lib.units.perMinute
 import org.team4099.lib.units.perSecond
 
 object FeederConstants {
-  const val GEAR_RATIO: Double = 1.0 / 1.0
+  const val GEAR_RATIO: Double = 14.0 / 9.0
 
   val STATOR_CURRENT_LIMIT = 40.0.amps
   val SUPPLY_CURRENT_LIMIT = 40.0.amps
 
-  val VOLTAGE_COMPENSATION = 0.volts
+  val VOLTAGE_COMPENSATION = 12.0.volts
   val MOMENT_OF_INERTIA = 0.kilo.grams.meterSquared
   val MAX_ACCELERATION: AngularAcceleration = 0.rotations.perSecond.perSecond
   val MAX_VELOCITY: AngularVelocity = 0.rotations.perSecond

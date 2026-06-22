@@ -2,9 +2,6 @@ package com.team4099.robot2026.subsystems.superstructure.indexer
 
 import com.ctre.phoenix6.BaseStatusSignal
 import com.ctre.phoenix6.StatusSignal
-import com.ctre.phoenix6.configs.Slot0Configs
-import com.ctre.phoenix6.configs.Slot1Configs
-import com.ctre.phoenix6.configs.Slot2Configs
 import com.ctre.phoenix6.configs.TalonFXConfiguration
 import com.ctre.phoenix6.controls.VoltageOut
 import com.ctre.phoenix6.hardware.TalonFX
@@ -35,16 +32,20 @@ object IndexerIOTalon : IndexerIO {
   private val topBeltTalon: TalonFX = TalonFX(Constants.Indexer.TOP_BELT_INDEXER_MOTOR_ID)
   private val bottomBeltTalon: TalonFX = TalonFX(Constants.Indexer.BOTTOM_BELT_INDEXER_MOTOR_ID)
 
-  private val slot0Configs: TalonFXConfiguration = TalonFXConfiguration()
-  private val slot1Configs: TalonFXConfiguration = TalonFXConfiguration()
-  private val slot2Configs: TalonFXConfiguration = TalonFXConfiguration()
+  private val floorConfig: TalonFXConfiguration = TalonFXConfiguration()
+  private val sideRollerConfig: TalonFXConfiguration = TalonFXConfiguration()
+  private val beltConfig: TalonFXConfiguration = TalonFXConfiguration()
 
 
   // create sensors
-  private val floorIndexerSensor =
+  private val floorTopIndexerSensor =
       ctreAngularMechanismSensor(
-          floorTalon, IndexerConstants.FloorConstants.GEAR_RATIO,
+          floorTalon, IndexerConstants.FloorConstants.TOP_GEAR_RATIO,
         IndexerConstants.FloorConstants.VOLTAGE_COMPENSATION)
+  private val floorBottomIndexerSensor =
+    ctreAngularMechanismSensor(
+      floorTalon, IndexerConstants.FloorConstants.BOTTOM_GEAR_RATIO,
+      IndexerConstants.FloorConstants.VOLTAGE_COMPENSATION)
   private val sideRollerIndexerSensor =
       ctreAngularMechanismSensor(
           sideRollerTalon, IndexerConstants.SideRollerConstants.GEAR_RATIO,
@@ -61,15 +62,15 @@ object IndexerIOTalon : IndexerIO {
   // status signals for each motor
   private var floorStatorCurrentSignal: StatusSignal<WPICurrent>
   private var floorSupplyCurrentSignal: StatusSignal<WPICurrent>
-  private var floorTorqueCurrentSignal: StatusSignal<WPICurrent>
   private var floorTempSignal: StatusSignal<WPITemp>
   private var floorVoltageSignal: StatusSignal<WPIVoltage>
-  private var floorAccelSignal: StatusSignal<WPIAngularAcceleration>
-  private var floorVelocitySignal: StatusSignal<WPIAngularVelocity>
+  private var floorTopAccelSignal: StatusSignal<WPIAngularAcceleration>
+  private var floorTopVelocitySignal: StatusSignal<WPIAngularVelocity>
+  private var floorBottomAccelSignal: StatusSignal<WPIAngularAcceleration>
+  private var floorBottomVelocitySignal: StatusSignal<WPIAngularVelocity>
 
   private var sideRollerStatorCurrentSignal: StatusSignal<WPICurrent>
   private var sideRollerSupplyCurrentSignal: StatusSignal<WPICurrent>
-  private var sideRollerTorqueCurrentSignal: StatusSignal<WPICurrent>
   private var sideRollerTempSignal: StatusSignal<WPITemp>
   private var sideRollerVoltageSignal: StatusSignal<WPIVoltage>
   private var sideRollerAccelSignal: StatusSignal<WPIAngularAcceleration>
@@ -77,7 +78,6 @@ object IndexerIOTalon : IndexerIO {
 
   private var topBeltStatorCurrentSignal: StatusSignal<WPICurrent>
   private var topBeltSupplyCurrentSignal: StatusSignal<WPICurrent>
-  private var topBeltTorqueCurrentSignal: StatusSignal<WPICurrent>
   private var topBeltTempSignal: StatusSignal<WPITemp>
   private var topBeltVoltageSignal: StatusSignal<WPIVoltage>
   private var topBeltAccelSignal: StatusSignal<WPIAngularAcceleration>
@@ -85,7 +85,6 @@ object IndexerIOTalon : IndexerIO {
 
   private var bottomBeltStatorCurrentSignal: StatusSignal<WPICurrent>
   private var bottomBeltSupplyCurrentSignal: StatusSignal<WPICurrent>
-  private var bottomBeltTorqueCurrentSignal: StatusSignal<WPICurrent>
   private var bottomBeltTempSignal: StatusSignal<WPITemp>
   private var bottomBeltVoltageSignal: StatusSignal<WPIVoltage>
   private var bottomBeltAccelSignal: StatusSignal<WPIAngularAcceleration>
@@ -100,45 +99,45 @@ object IndexerIOTalon : IndexerIO {
     bottomBeltTalon.clearStickyFaults()
 
     // current limits and backup modes
-    slot0Configs.CurrentLimits.SupplyCurrentLimit = IndexerConstants.FloorConstants.SUPPLY_CURRENT_LIMIT.inAmperes
-    slot0Configs.CurrentLimits.StatorCurrentLimit = IndexerConstants.FloorConstants.STATOR_CURRENT_LIMIT.inAmperes
-    slot0Configs.CurrentLimits.SupplyCurrentLimitEnable = true
-    slot0Configs.CurrentLimits.StatorCurrentLimitEnable = true
-    slot0Configs.MotorOutput.NeutralMode = NeutralModeValue.Coast
-    slot0Configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive
+    floorConfig.CurrentLimits.SupplyCurrentLimit = IndexerConstants.FloorConstants.SUPPLY_CURRENT_LIMIT.inAmperes
+    floorConfig.CurrentLimits.StatorCurrentLimit = IndexerConstants.FloorConstants.STATOR_CURRENT_LIMIT.inAmperes
+    floorConfig.CurrentLimits.SupplyCurrentLimitEnable = true
+    floorConfig.CurrentLimits.StatorCurrentLimitEnable = true
+    floorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast
+    floorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive
 
-    slot1Configs.CurrentLimits.SupplyCurrentLimit = IndexerConstants.SideRollerConstants.SUPPLY_CURRENT_LIMIT.inAmperes
-    slot1Configs.CurrentLimits.StatorCurrentLimit = IndexerConstants.SideRollerConstants.STATOR_CURRENT_LIMIT.inAmperes
-    slot1Configs.CurrentLimits.SupplyCurrentLimitEnable = true
-    slot1Configs.CurrentLimits.StatorCurrentLimitEnable = true
-    slot1Configs.MotorOutput.NeutralMode = NeutralModeValue.Coast
-    slot1Configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive
+    sideRollerConfig.CurrentLimits.SupplyCurrentLimit = IndexerConstants.SideRollerConstants.SUPPLY_CURRENT_LIMIT.inAmperes
+    sideRollerConfig.CurrentLimits.StatorCurrentLimit = IndexerConstants.SideRollerConstants.STATOR_CURRENT_LIMIT.inAmperes
+    sideRollerConfig.CurrentLimits.SupplyCurrentLimitEnable = true
+    sideRollerConfig.CurrentLimits.StatorCurrentLimitEnable = true
+    sideRollerConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast
+    sideRollerConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive
 
-    slot2Configs.CurrentLimits.SupplyCurrentLimit = IndexerConstants.BeltConstants.SUPPLY_CURRENT_LIMIT.inAmperes
-    slot2Configs.CurrentLimits.StatorCurrentLimit = IndexerConstants.BeltConstants.STATOR_CURRENT_LIMIT.inAmperes
-    slot2Configs.CurrentLimits.SupplyCurrentLimitEnable = true
-    slot2Configs.CurrentLimits.StatorCurrentLimitEnable = true
-    slot2Configs.MotorOutput.NeutralMode = NeutralModeValue.Coast
-    slot2Configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive
+    beltConfig.CurrentLimits.SupplyCurrentLimit = IndexerConstants.BeltConstants.SUPPLY_CURRENT_LIMIT.inAmperes
+    beltConfig.CurrentLimits.StatorCurrentLimit = IndexerConstants.BeltConstants.STATOR_CURRENT_LIMIT.inAmperes
+    beltConfig.CurrentLimits.SupplyCurrentLimitEnable = true
+    beltConfig.CurrentLimits.StatorCurrentLimitEnable = true
+    beltConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast
+    beltConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive
 
     // applying configs
-    floorTalon.configurator.apply(slot0Configs)
-    sideRollerTalon.configurator.apply(slot1Configs)
-    topBeltTalon.configurator.apply(slot2Configs)
-    bottomBeltTalon.configurator.apply(slot2Configs)
+    floorTalon.configurator.apply(floorConfig)
+    sideRollerTalon.configurator.apply(sideRollerConfig)
+    topBeltTalon.configurator.apply(beltConfig)
+    bottomBeltTalon.configurator.apply(beltConfig)
 
     // define signals for each motor
     floorSupplyCurrentSignal = floorTalon.supplyCurrent
     floorStatorCurrentSignal = floorTalon.statorCurrent
-    floorTorqueCurrentSignal = floorTalon.torqueCurrent
-    floorVelocitySignal = floorTalon.velocity
+    floorBottomVelocitySignal = floorTalon.velocity
+    floorTopVelocitySignal = floorTalon.velocity
     floorTempSignal = floorTalon.deviceTemp
     floorVoltageSignal = floorTalon.motorVoltage
-    floorAccelSignal = floorTalon.acceleration
+    floorBottomAccelSignal = floorTalon.acceleration
+    floorTopAccelSignal = floorTalon.acceleration
 
     sideRollerSupplyCurrentSignal = sideRollerTalon.supplyCurrent
     sideRollerStatorCurrentSignal = sideRollerTalon.statorCurrent
-    sideRollerTorqueCurrentSignal = sideRollerTalon.torqueCurrent
     sideRollerVelocitySignal = sideRollerTalon.velocity
     sideRollerTempSignal = sideRollerTalon.deviceTemp
     sideRollerVoltageSignal = sideRollerTalon.motorVoltage
@@ -146,7 +145,6 @@ object IndexerIOTalon : IndexerIO {
 
     topBeltSupplyCurrentSignal = topBeltTalon.supplyCurrent
     topBeltStatorCurrentSignal = topBeltTalon.statorCurrent
-    topBeltTorqueCurrentSignal = topBeltTalon.torqueCurrent
     topBeltVelocitySignal = topBeltTalon.velocity
     topBeltTempSignal = topBeltTalon.deviceTemp
     topBeltVoltageSignal = topBeltTalon.motorVoltage
@@ -154,7 +152,6 @@ object IndexerIOTalon : IndexerIO {
 
     bottomBeltSupplyCurrentSignal = bottomBeltTalon.supplyCurrent
     bottomBeltStatorCurrentSignal = bottomBeltTalon.statorCurrent
-    bottomBeltTorqueCurrentSignal = bottomBeltTalon.torqueCurrent
     bottomBeltVelocitySignal = bottomBeltTalon.velocity
     bottomBeltTempSignal = bottomBeltTalon.deviceTemp
     bottomBeltVoltageSignal = bottomBeltTalon.motorVoltage
@@ -165,28 +162,26 @@ object IndexerIOTalon : IndexerIO {
     BaseStatusSignal.refreshAll(
         floorSupplyCurrentSignal,
         floorStatorCurrentSignal,
-        floorTorqueCurrentSignal,
-        floorVelocitySignal,
+        floorBottomVelocitySignal,
+      floorTopVelocitySignal,
         floorTempSignal,
         floorVoltageSignal,
-        floorAccelSignal,
+        floorBottomAccelSignal,
+      floorTopAccelSignal,
         sideRollerSupplyCurrentSignal,
         sideRollerStatorCurrentSignal,
-        sideRollerTorqueCurrentSignal,
         sideRollerVelocitySignal,
         sideRollerTempSignal,
         sideRollerVoltageSignal,
         sideRollerAccelSignal,
         topBeltSupplyCurrentSignal,
         topBeltStatorCurrentSignal,
-        topBeltTorqueCurrentSignal,
         topBeltVelocitySignal,
         topBeltTempSignal,
         topBeltVoltageSignal,
         topBeltAccelSignal,
         bottomBeltSupplyCurrentSignal,
         bottomBeltStatorCurrentSignal,
-        bottomBeltTorqueCurrentSignal,
         bottomBeltVelocitySignal,
         bottomBeltTempSignal,
         bottomBeltVoltageSignal,
@@ -196,44 +191,44 @@ object IndexerIOTalon : IndexerIO {
   override fun updateInputs(inputs: IndexerIO.IndexerInputs) {
     updateSignals()
 
-    inputs.floorIndexerVelocity = floorIndexerSensor.velocity
-    inputs.floorIndexerAcceleration =
-        (floorAccelSignal.valueAsDouble / IndexerConstants.FloorConstants.GEAR_RATIO)
+    inputs.floorTopIndexerVelocity = floorTopIndexerSensor.velocity
+    inputs.floorBottomIndexerVelocity = floorBottomIndexerSensor.velocity
+    inputs.floorTopIndexerAcceleration =
+        (floorTopAccelSignal.valueAsDouble * IndexerConstants.FloorConstants.TOP_GEAR_RATIO)
           .rotations.perSecond.perSecond
+    inputs.floorBottomIndexerAcceleration =
+      (floorBottomAccelSignal.valueAsDouble * IndexerConstants.FloorConstants.BOTTOM_GEAR_RATIO)
+        .rotations.perSecond.perSecond
     inputs.floorIndexerTemperature = floorTempSignal.valueAsDouble.celsius
     inputs.floorIndexerSupplyCurrent = floorSupplyCurrentSignal.valueAsDouble.amps
     inputs.floorIndexerStatorCurrent = floorStatorCurrentSignal.valueAsDouble.amps
-    inputs.floorIndexerTorqueCurrent = floorTorqueCurrentSignal.valueAsDouble.amps
     inputs.floorIndexerAppliedVoltage = floorVoltageSignal.valueAsDouble.volts
 
     inputs.sideRollerIndexerVelocity = sideRollerIndexerSensor.velocity
     inputs.sideRollerIndexerAcceleration =
-        (sideRollerAccelSignal.valueAsDouble / IndexerConstants.SideRollerConstants.GEAR_RATIO)
+        (sideRollerAccelSignal.valueAsDouble * IndexerConstants.SideRollerConstants.GEAR_RATIO)
             .rotations.perSecond.perSecond
     inputs.sideRollerIndexerTemperature = sideRollerTempSignal.valueAsDouble.celsius
     inputs.sideRollerIndexerSupplyCurrent = sideRollerSupplyCurrentSignal.valueAsDouble.amps
     inputs.sideRollerIndexerStatorCurrent = sideRollerStatorCurrentSignal.valueAsDouble.amps
-    inputs.sideRollerIndexerTorqueCurrent = sideRollerTorqueCurrentSignal.valueAsDouble.amps
     inputs.sideRollerIndexerAppliedVoltage = sideRollerVoltageSignal.valueAsDouble.volts
 
     inputs.topBeltIndexerVelocity = topBeltIndexerSensor.velocity
     inputs.topBeltIndexerAcceleration =
-        (topBeltAccelSignal.valueAsDouble / IndexerConstants.BeltConstants.GEAR_RATIO)
+        (topBeltAccelSignal.valueAsDouble * IndexerConstants.BeltConstants.GEAR_RATIO)
             .rotations.perSecond.perSecond
     inputs.topBeltIndexerTemperature = topBeltTempSignal.valueAsDouble.celsius
     inputs.topBeltIndexerSupplyCurrent = topBeltSupplyCurrentSignal.valueAsDouble.amps
     inputs.topBeltIndexerStatorCurrent = topBeltStatorCurrentSignal.valueAsDouble.amps
-    inputs.topBeltIndexerTorqueCurrent = topBeltTorqueCurrentSignal.valueAsDouble.amps
     inputs.topBeltIndexerAppliedVoltage = topBeltVoltageSignal.valueAsDouble.volts
 
     inputs.bottomBeltIndexerVelocity = bottomBeltIndexerSensor.velocity
     inputs.bottomBeltIndexerAcceleration =
-        (bottomBeltAccelSignal.valueAsDouble / IndexerConstants.BeltConstants.GEAR_RATIO)
+        (bottomBeltAccelSignal.valueAsDouble * IndexerConstants.BeltConstants.GEAR_RATIO)
             .rotations.perSecond.perSecond
     inputs.bottomBeltIndexerTemperature = bottomBeltTempSignal.valueAsDouble.celsius
     inputs.bottomBeltIndexerSupplyCurrent = bottomBeltSupplyCurrentSignal.valueAsDouble.amps
     inputs.bottomBeltIndexerStatorCurrent = bottomBeltStatorCurrentSignal.valueAsDouble.amps
-    inputs.bottomBeltIndexerTorqueCurrent = bottomBeltTorqueCurrentSignal.valueAsDouble.amps
     inputs.bottomBeltIndexerAppliedVoltage = bottomBeltVoltageSignal.valueAsDouble.volts
   }
 

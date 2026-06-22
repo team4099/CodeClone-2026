@@ -41,7 +41,6 @@ object FeederIOTalon : FeederIO {
   // status signals for each motor
   private var feederStatorCurrentSignal: StatusSignal<WPICurrent>
   private var feederSupplyCurrentSignal: StatusSignal<WPICurrent>
-  private var feederTorqueCurrentSignal: StatusSignal<WPICurrent>
   private var feederTempSignal: StatusSignal<WPITemp>
   private var feederVoltageSignal: StatusSignal<WPIVoltage>
   private var feederAccelSignal: StatusSignal<WPIAngularAcceleration>
@@ -66,7 +65,6 @@ object FeederIOTalon : FeederIO {
     // define signals for each motor
     feederSupplyCurrentSignal = feederTalon.supplyCurrent
     feederStatorCurrentSignal = feederTalon.statorCurrent
-    feederTorqueCurrentSignal = feederTalon.torqueCurrent
     feederVelocitySignal = feederTalon.velocity
     feederTempSignal = feederTalon.deviceTemp
     feederVoltageSignal = feederTalon.motorVoltage
@@ -77,7 +75,6 @@ object FeederIOTalon : FeederIO {
     BaseStatusSignal.refreshAll(
       feederSupplyCurrentSignal,
       feederStatorCurrentSignal,
-      feederTorqueCurrentSignal,
       feederVelocitySignal,
       feederTempSignal,
       feederVoltageSignal,
@@ -89,14 +86,13 @@ object FeederIOTalon : FeederIO {
 
     inputs.feederVelocity = feederSensor.velocity
     inputs.feederAcceleration =
-      (feederAccelSignal.valueAsDouble / FeederConstants.GEAR_RATIO)
+      (feederAccelSignal.valueAsDouble * FeederConstants.GEAR_RATIO)
         .rotations
         .perSecond
         .perSecond
     inputs.feederTemperature = feederTempSignal.valueAsDouble.celsius
     inputs.feederSupplyCurrent = feederSupplyCurrentSignal.valueAsDouble.amps
     inputs.feederStatorCurrent = feederStatorCurrentSignal.valueAsDouble.amps
-    inputs.feederTorqueCurrent = feederTorqueCurrentSignal.valueAsDouble.amps
     inputs.feederAppliedVoltage = feederVoltageSignal.valueAsDouble.volts
   }
 
