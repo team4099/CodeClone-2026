@@ -4,7 +4,6 @@ import org.littletonrobotics.junction.LogTable
 import org.littletonrobotics.junction.inputs.LoggableInputs
 import org.team4099.lib.units.AngularVelocity
 import org.team4099.lib.units.Fraction
-import org.team4099.lib.units.base.Ampere
 import org.team4099.lib.units.base.Second
 import org.team4099.lib.units.base.amps
 import org.team4099.lib.units.base.celsius

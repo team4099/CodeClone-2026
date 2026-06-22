@@ -37,7 +37,7 @@ class Indexer(private val io: IndexerIO) : ControlledByStateMachine() {
         nextState = fromRequestToState(currentRequest)
       }
       IndexerState.IDLE -> {
-        io.setVelocity(IndexerConstants.VELOCITIES.IDLE_VELOCITY)
+        io.setVelocity(IndexerConstants.IDLE_VELOCITY)
         nextState = fromRequestToState(currentRequest)
       }
       IndexerState.OPEN_LOOP -> {

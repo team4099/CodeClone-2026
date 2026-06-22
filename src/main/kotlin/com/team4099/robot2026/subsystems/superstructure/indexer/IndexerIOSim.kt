@@ -30,14 +30,30 @@ import org.team4099.lib.units.derived.volts
 import org.team4099.lib.units.perSecond
 
 object IndexerIOSim : IndexerIO {
-  private val indexerSim =
+  private val floorIndexerSim =
       FlywheelSim(
           LinearSystemId.createFlywheelSystem(
-              DCMotor.getKrakenX44Foc(4),
-              IndexerConstants.MOMENT_OF_INERTIA.inKilogramsMeterSquared,
-              1.0 / IndexerConstants.GEAR_RATIO,
+              DCMotor.getKrakenX60Foc(1),
+              IndexerConstants.FloorConstants.MOMENT_OF_INERTIA.inKilogramsMeterSquared,
+              1.0 / IndexerConstants.FloorConstants.GEAR_RATIO,
           ),
-          DCMotor.getKrakenX44Foc(4))
+          DCMotor.getKrakenX60Foc(1))
+  private val sideRollerIndexerSim =
+    FlywheelSim(
+      LinearSystemId.createFlywheelSystem(
+        DCMotor.getKrakenX44Foc(1),
+        IndexerConstants.SideRollerConstants.MOMENT_OF_INERTIA.inKilogramsMeterSquared,
+        1.0 / IndexerConstants.SideRollerConstants.GEAR_RATIO,
+      ),
+      DCMotor.getKrakenX44Foc(1))
+  private val beltIndexerSim =
+    FlywheelSim(
+      LinearSystemId.createFlywheelSystem(
+        DCMotor.getKrakenX44Foc(2),
+        IndexerConstants.BeltConstants.MOMENT_OF_INERTIA.inKilogramsMeterSquared,
+        1.0 / IndexerConstants.BeltConstants.GEAR_RATIO,
+      ),
+      DCMotor.getKrakenX44Foc(2))
 
   private val indexerPIDController =
       PIDController(
@@ -45,63 +61,73 @@ object IndexerIOSim : IndexerIO {
   private var indexerFFController =
       SimpleMotorFeedforward(
           IndexerConstants.PID.SIM_KS, IndexerConstants.PID.SIM_KV, IndexerConstants.PID.SIM_KA)
-  private var appliedVoltage = 0.0.volts
+  private var floorAppliedVoltage = 0.0.volts
+  private var sideRollerAppliedVoltage = 0.0.volts
+  private var beltAppliedVoltage = 0.0.volts
 
   override fun updateInputs(inputs: IndexerIO.IndexerInputs) {
-    indexerSim.update(Constants.Universal.LOOP_PERIOD_TIME.inSeconds)
-    inputs.floorIndexerVelocity = indexerSim.angularVelocityRadPerSec.radians.perSecond
+    floorIndexerSim.update(Constants.Universal.LOOP_PERIOD_TIME.inSeconds)
+    sideRollerIndexerSim.update(Constants.Universal.LOOP_PERIOD_TIME.inSeconds)
+    beltIndexerSim.update(Constants.Universal.LOOP_PERIOD_TIME.inSeconds)
+
+
+    inputs.floorIndexerVelocity = floorIndexerSim.angularVelocityRadPerSec.radians.perSecond
     inputs.floorIndexerAcceleration =
-        indexerSim.angularAccelerationRadPerSecSq.radians.perSecond.perSecond
-    inputs.floorIndexerAppliedVoltage = appliedVoltage
+      floorIndexerSim.angularAccelerationRadPerSecSq.radians.perSecond.perSecond
+    inputs.floorIndexerAppliedVoltage = floorAppliedVoltage
     inputs.floorIndexerSupplyCurrent = 0.0.amps
-    inputs.floorIndexerStatorCurrent = indexerSim.currentDrawAmps.amps
+    inputs.floorIndexerStatorCurrent = floorIndexerSim.currentDrawAmps.amps
     inputs.floorIndexerTorqueCurrent = 0.0.amps
     inputs.floorIndexerTemperature = 0.0.celsius
 
-    inputs.sideRollerIndexerVelocity = indexerSim.angularVelocityRadPerSec.radians.perSecond
+    inputs.sideRollerIndexerVelocity = sideRollerIndexerSim.angularVelocityRadPerSec.radians.perSecond
     inputs.sideRollerIndexerAcceleration =
-        indexerSim.angularAccelerationRadPerSecSq.radians.perSecond.perSecond
-    inputs.sideRollerIndexerAppliedVoltage = appliedVoltage
+      sideRollerIndexerSim.angularAccelerationRadPerSecSq.radians.perSecond.perSecond
+    inputs.sideRollerIndexerAppliedVoltage = sideRollerAppliedVoltage
     inputs.sideRollerIndexerSupplyCurrent = 0.0.amps
-    inputs.sideRollerIndexerStatorCurrent = indexerSim.currentDrawAmps.amps
+    inputs.sideRollerIndexerStatorCurrent = sideRollerIndexerSim.currentDrawAmps.amps
     inputs.sideRollerIndexerTorqueCurrent = 0.0.amps
     inputs.sideRollerIndexerTemperature = 0.0.celsius
 
-    inputs.topBeltIndexerVelocity = indexerSim.angularVelocityRadPerSec.radians.perSecond
+    inputs.topBeltIndexerVelocity = beltIndexerSim.angularVelocityRadPerSec.radians.perSecond
     inputs.topBeltIndexerAcceleration =
-        indexerSim.angularAccelerationRadPerSecSq.radians.perSecond.perSecond
-    inputs.topBeltIndexerAppliedVoltage = appliedVoltage
+      beltIndexerSim.angularAccelerationRadPerSecSq.radians.perSecond.perSecond
+    inputs.topBeltIndexerAppliedVoltage = beltAppliedVoltage
     inputs.topBeltIndexerSupplyCurrent = 0.0.amps
-    inputs.topBeltIndexerStatorCurrent = indexerSim.currentDrawAmps.amps
+    inputs.topBeltIndexerStatorCurrent = beltIndexerSim.currentDrawAmps.amps
     inputs.topBeltIndexerTorqueCurrent = 0.0.amps
     inputs.topBeltIndexerTemperature = 0.0.celsius
 
-    inputs.bottomBeltIndexerVelocity = indexerSim.angularVelocityRadPerSec.radians.perSecond
+    inputs.bottomBeltIndexerVelocity = beltIndexerSim.angularVelocityRadPerSec.radians.perSecond
     inputs.bottomBeltIndexerAcceleration =
-        indexerSim.angularAccelerationRadPerSecSq.radians.perSecond.perSecond
-    inputs.bottomBeltIndexerAppliedVoltage = appliedVoltage
+      beltIndexerSim.angularAccelerationRadPerSecSq.radians.perSecond.perSecond
+    inputs.bottomBeltIndexerAppliedVoltage = beltAppliedVoltage
     inputs.bottomBeltIndexerSupplyCurrent = 0.0.amps
-    inputs.bottomBeltIndexerStatorCurrent = indexerSim.currentDrawAmps.amps
+    inputs.bottomBeltIndexerStatorCurrent = beltIndexerSim.currentDrawAmps.amps
     inputs.bottomBeltIndexerTorqueCurrent = 0.0.amps
     inputs.bottomBeltIndexerTemperature = 0.0.celsius
   }
 
   override fun setVoltage(voltage: ElectricalPotential) {
-    val clampedVoltage =
+    val floorClampedVoltage =
         clamp(
-            voltage, -IndexerConstants.VOLTAGE_COMPENSATION, IndexerConstants.VOLTAGE_COMPENSATION)
-    indexerSim.setInputVoltage(clampedVoltage.inVolts)
-    appliedVoltage = clampedVoltage
-  }
+            voltage, -IndexerConstants.FloorConstants.VOLTAGE_COMPENSATION,
+          IndexerConstants.FloorConstants.VOLTAGE_COMPENSATION)
+    val sideRollerClampedVoltage =
+      clamp(
+        voltage, -IndexerConstants.SideRollerConstants.VOLTAGE_COMPENSATION,
+        IndexerConstants.SideRollerConstants.VOLTAGE_COMPENSATION)
+    val beltClampedVoltage =
+      clamp(
+        voltage, -IndexerConstants.BeltConstants.VOLTAGE_COMPENSATION,
+        IndexerConstants.BeltConstants.VOLTAGE_COMPENSATION)
+    floorIndexerSim.setInputVoltage(floorClampedVoltage.inVolts)
+    sideRollerIndexerSim.setInputVoltage(sideRollerClampedVoltage.inVolts)
+    beltIndexerSim.setInputVoltage(beltClampedVoltage.inVolts)
 
-  override fun setVelocity(velocity: AngularVelocity) {
-    val pidOutput =
-        indexerPIDController.calculate(
-            indexerSim.angularVelocityRadPerSec.radians.perSecond, velocity)
-    val ffOutput =
-        indexerFFController.calculateWithVelocities(
-            indexerSim.angularVelocityRadPerSec.radians.perSecond, velocity)
-    setVoltage(pidOutput + ffOutput)
+    floorAppliedVoltage = floorClampedVoltage
+    sideRollerAppliedVoltage = sideRollerClampedVoltage
+    beltAppliedVoltage = beltClampedVoltage
   }
 
   override fun configPIDVoltage(

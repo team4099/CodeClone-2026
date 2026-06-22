@@ -25,21 +25,48 @@ import org.team4099.lib.units.perMinute
 import org.team4099.lib.units.perSecond
 
 object IndexerConstants {
-  const val GEAR_RATIO: Double = 1.0 / 1.0
+  object FloorConstants {
+    const val GEAR_RATIO: Double = 1.0 / 1.0
 
-  val STATOR_CURRENT_LIMIT = 40.0.amps
-  val SUPPLY_CURRENT_LIMIT = 40.0.amps
+    val STATOR_CURRENT_LIMIT = 40.0.amps
+    val SUPPLY_CURRENT_LIMIT = 40.0.amps
 
-  val VOLTAGE_COMPENSATION = 0.volts
-  val MOMENT_OF_INERTIA = 0.kilo.grams.meterSquared
-  val MAX_ACCELERATION: AngularAcceleration = 0.rotations.perSecond.perSecond
-  val MAX_VELOCITY: AngularVelocity = 0.rotations.perSecond
-  val INDEXER_TOLERANCE = 0.0.rotations.perMinute
+    val VOLTAGE_COMPENSATION = 0.volts
+    val MOMENT_OF_INERTIA = 0.kilo.grams.meterSquared
+    val MAX_ACCELERATION: AngularAcceleration = 0.rotations.perSecond.perSecond
+    val MAX_VELOCITY: AngularVelocity = 0.rotations.perSecond
+    val INDEXER_TOLERANCE = 0.0.rotations.perMinute
 
-  object VELOCITIES {
-    val IDLE_VELOCITY = 0.0.rotations.perSecond
-    val SCORE_VELOCITY = 0.0.rotations.perSecond
   }
+
+  object BeltConstants {
+    const val GEAR_RATIO: Double = 1.0 / 1.0
+
+    val STATOR_CURRENT_LIMIT = 40.0.amps
+    val SUPPLY_CURRENT_LIMIT = 40.0.amps
+
+    val VOLTAGE_COMPENSATION = 0.volts
+    val MOMENT_OF_INERTIA = 0.kilo.grams.meterSquared
+    val MAX_ACCELERATION: AngularAcceleration = 0.rotations.perSecond.perSecond
+    val MAX_VELOCITY: AngularVelocity = 0.rotations.perSecond
+    val INDEXER_TOLERANCE = 0.0.rotations.perMinute
+
+  }
+
+  object SideRollerConstants {
+    const val GEAR_RATIO: Double = 1.0 / 1.0
+
+    val STATOR_CURRENT_LIMIT = 40.0.amps
+    val SUPPLY_CURRENT_LIMIT = 40.0.amps
+
+    val VOLTAGE_COMPENSATION = 0.volts
+    val MOMENT_OF_INERTIA = 0.kilo.grams.meterSquared
+    val MAX_ACCELERATION: AngularAcceleration = 0.rotations.perSecond.perSecond
+    val MAX_VELOCITY: AngularVelocity = 0.rotations.perSecond
+    val INDEXER_TOLERANCE = 0.0.rotations.perMinute
+  }
+
+  val IDLE_VELOCITY = 0.0.rotations.perSecond
 
   object PID {
     val REAL_KP: ProportionalGain<Velocity<Radian>, Ampere> = 0.0.amps / 0.0.radians.perSecond
