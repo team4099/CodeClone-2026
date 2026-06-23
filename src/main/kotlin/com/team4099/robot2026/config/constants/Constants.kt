@@ -76,6 +76,17 @@ object Constants {
     val TABS = arrayOf("Pre-match", "In-match")
   }
 
+  object Feeder {
+    const val FEEDER_MOTOR_ID = 51
+  }
+
+  object Indexer {
+    const val FLOOR_INDEXER_MOTOR_ID = 50
+    const val SIDE_ROLLER_INDEXER_MOTOR_ID = 52
+    const val TOP_BELT_INDEXER_MOTOR_ID = 53
+    const val BOTTOM_BELT_INDEXER_MOTOR_ID = 54
+  }
+
   object LEDS {
     const val CANDLE_ID = 1
   }
