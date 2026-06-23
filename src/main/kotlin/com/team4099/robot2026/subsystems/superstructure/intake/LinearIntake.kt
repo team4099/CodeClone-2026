@@ -1,0 +1,100 @@
+package com.team4099.robot2026.subsystems.superstructure.intake
+
+import com.team4099.robot2026.subsystems.superstructure.Request
+import com.team4099.robot2026.util.ControlledByStateMachine
+import com.team4099.robot2026.util.CustomLogger
+import edu.wpi.first.wpilibj.RobotBase
+import org.team4099.lib.units.base.inInches
+import org.team4099.lib.units.derived.inVolts
+import org.team4099.lib.units.derived.volts
+
+class LinearIntake(private val io: LinearIntakeIO) : ControlledByStateMachine() {
+  val inputs = LinearIntakeIO.LintakeIOInputs()
+  var currentState = LintakeStates.UNITITALIZED
+  var currentRequest: Request.LintakeRequest = Request.LintakeRequest.Idle()
+    set(value) {
+      when (value) {
+        is Request.LintakeRequest.Idle ->
+            targetVoltage = IntakeConstants.LinearIntakeConstants.IDLE_VOLTAGE
+        is Request.LintakeRequest.OpenLoop -> targetVoltage = value.voltage
+        is Request.LintakeRequest.ClosedLoop -> targetPosition = value.position
+      }
+      field = value
+    }
+
+  var targetVoltage = 0.0.volts
+    private set
+
+  var targetPosition = IntakeConstants.LintakePosConstants.START_POSITION
+    private set
+
+  val isAtTargetPosition: Boolean
+    get() =
+        (currentRequest is Request.LintakeRequest.ClosedLoop &&
+            (inputs.lintakePosition - targetPosition).absoluteValue <=
+                IntakeConstants.LintakePosConstants.POSITION_TOLERANCE)
+
+  init {
+    if (RobotBase.isReal()) {
+      io.configPID(
+          IntakeConstants.LintakePID.REAL_KP,
+          IntakeConstants.LintakePID.REAL_KI,
+          IntakeConstants.LintakePID.REAL_KD)
+      io.configFF(IntakeConstants.LintakePID.REAL_KS)
+    } else {
+      io.configPID(
+          IntakeConstants.LintakePID.SIM_KP,
+          IntakeConstants.LintakePID.SIM_KI,
+          IntakeConstants.LintakePID.SIM_KD)
+      io.configFF(IntakeConstants.LintakePID.SIM_KS)
+    }
+  }
+
+  override fun onLoop() {
+
+    io.updateInputs(inputs)
+    CustomLogger.processInputs("Lintake", inputs)
+    CustomLogger.recordOutput("Lintake/CurrentState", currentState.name)
+    CustomLogger.recordOutput("Lintake/CurrentRequest", currentRequest.javaClass.simpleName)
+    CustomLogger.recordOutput("Lintake/TargetVoltage", targetVoltage.inVolts)
+    CustomLogger.recordOutput("Lintake/TargetPosition", targetPosition.inInches)
+    CustomLogger.recordOutput("Lintake/isAtTargetPosition", isAtTargetPosition)
+
+    var nextState = currentState
+    when (currentState) {
+      LintakeStates.UNITITALIZED -> {
+        nextState = LinearIntake.Companion.fromRequestToState(currentRequest)
+      }
+      LintakeStates.OPEN_LOOP -> {
+        io.setVoltage(targetVoltage)
+        nextState = LinearIntake.Companion.fromRequestToState(currentRequest)
+      }
+      LintakeStates.IDLE -> {
+        io.setVoltage(IntakeConstants.LinearIntakeConstants.IDLE_VOLTAGE)
+        nextState = LinearIntake.Companion.fromRequestToState(currentRequest)
+      }
+      LintakeStates.CLOSED_LOOP -> {
+        io.setPosition(targetPosition)
+        nextState = LinearIntake.Companion.fromRequestToState(currentRequest)
+      }
+    }
+    currentState = nextState
+  }
+
+  companion object {
+    enum class LintakeStates {
+      OPEN_LOOP,
+      IDLE,
+      UNITITALIZED,
+      CLOSED_LOOP
+    }
+
+    inline fun fromRequestToState(request: Request.LintakeRequest): LintakeStates {
+      return when (request) {
+        is Request.LintakeRequest.Idle -> LintakeStates.IDLE
+        is Request.LintakeRequest.OpenLoop -> LintakeStates.OPEN_LOOP
+        is Request.LintakeRequest.ClosedLoop -> LintakeStates.CLOSED_LOOP
+      }
+    }
+  }
+}
