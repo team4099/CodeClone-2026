@@ -26,7 +26,7 @@ import org.team4099.lib.units.perSecond
 
 object IndexerConstants {
   object FloorConstants {
-    const val TOP_GEAR_RATIO: Double = (16.0 / 58.0) * (28.0/30.0)
+    const val TOP_GEAR_RATIO: Double = (16.0 / 58.0) * (28.0 / 30.0)
     const val BOTTOM_GEAR_RATIO: Double = 16.0 / 58.0
 
     val STATOR_CURRENT_LIMIT = 40.0.amps
@@ -38,7 +38,6 @@ object IndexerConstants {
     val MAX_ACCELERATION: AngularAcceleration = 0.rotations.perSecond.perSecond
     val MAX_VELOCITY: AngularVelocity = 0.rotations.perSecond
     val INDEXER_TOLERANCE = 0.0.rotations.perMinute
-
   }
 
   object BeltConstants {
@@ -53,7 +52,6 @@ object IndexerConstants {
     val MAX_ACCELERATION: AngularAcceleration = 0.rotations.perSecond.perSecond
     val MAX_VELOCITY: AngularVelocity = 0.rotations.perSecond
     val INDEXER_TOLERANCE = 0.0.rotations.perMinute
-
   }
 
   object SideRollerConstants {

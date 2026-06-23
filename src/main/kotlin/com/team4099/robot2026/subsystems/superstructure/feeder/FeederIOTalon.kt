@@ -35,8 +35,8 @@ object FeederIOTalon : FeederIO {
 
   // create sensors
   private val feederSensor =
-    ctreAngularMechanismSensor(
-      feederTalon, FeederConstants.GEAR_RATIO, FeederConstants.VOLTAGE_COMPENSATION)
+      ctreAngularMechanismSensor(
+          feederTalon, FeederConstants.GEAR_RATIO, FeederConstants.VOLTAGE_COMPENSATION)
 
   // status signals for each motor
   private var feederStatorCurrentSignal: StatusSignal<WPICurrent>
@@ -73,12 +73,12 @@ object FeederIOTalon : FeederIO {
 
   private fun updateSignals() {
     BaseStatusSignal.refreshAll(
-      feederSupplyCurrentSignal,
-      feederStatorCurrentSignal,
-      feederVelocitySignal,
-      feederTempSignal,
-      feederVoltageSignal,
-      feederAccelSignal)
+        feederSupplyCurrentSignal,
+        feederStatorCurrentSignal,
+        feederVelocitySignal,
+        feederTempSignal,
+        feederVoltageSignal,
+        feederAccelSignal)
   }
 
   override fun updateInputs(inputs: FeederIO.FeederInputs) {
@@ -86,10 +86,7 @@ object FeederIOTalon : FeederIO {
 
     inputs.feederVelocity = feederSensor.velocity
     inputs.feederAcceleration =
-      (feederAccelSignal.valueAsDouble * FeederConstants.GEAR_RATIO)
-        .rotations
-        .perSecond
-        .perSecond
+        (feederAccelSignal.valueAsDouble * FeederConstants.GEAR_RATIO).rotations.perSecond.perSecond
     inputs.feederTemperature = feederTempSignal.valueAsDouble.celsius
     inputs.feederSupplyCurrent = feederSupplyCurrentSignal.valueAsDouble.amps
     inputs.feederStatorCurrent = feederStatorCurrentSignal.valueAsDouble.amps
@@ -98,10 +95,10 @@ object FeederIOTalon : FeederIO {
 
   override fun setVoltage(voltage: ElectricalPotential) {
     val clampedVoltage =
-      clamp(
-        voltage,
-        lowerBound = -FeederConstants.VOLTAGE_COMPENSATION,
-        upperBound = FeederConstants.VOLTAGE_COMPENSATION)
+        clamp(
+            voltage,
+            lowerBound = -FeederConstants.VOLTAGE_COMPENSATION,
+            upperBound = FeederConstants.VOLTAGE_COMPENSATION)
     feederTalon.setControl(voltageOut.withOutput(clampedVoltage.inVolts))
   }
 

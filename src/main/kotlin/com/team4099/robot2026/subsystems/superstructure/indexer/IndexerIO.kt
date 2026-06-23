@@ -49,29 +49,39 @@ interface IndexerIO {
     override fun toLog(table: LogTable) {
       table.put("floorTopIndexerVelocityRPM", floorTopIndexerVelocity.inRotationsPerMinute)
       table.put("floorBottomIndexerVelocityRPM", floorBottomIndexerVelocity.inRotationsPerMinute)
-      table.put("floorTopIndexerAccelerationRPMPM", floorTopIndexerAcceleration.inRotationsPerMinutePerMinute)
-      table.put("floorBottomIndexerAccelerationRPMPM", floorBottomIndexerAcceleration.inRotationsPerMinutePerMinute)
+      table.put(
+          "floorTopIndexerAccelerationRPMPM",
+          floorTopIndexerAcceleration.inRotationsPerMinutePerMinute)
+      table.put(
+          "floorBottomIndexerAccelerationRPMPM",
+          floorBottomIndexerAcceleration.inRotationsPerMinutePerMinute)
       table.put("floorIndexerSupplyCurrentAmps", floorIndexerSupplyCurrent.inAmperes)
       table.put("floorIndexerStatorCurrentAmps", floorIndexerStatorCurrent.inAmperes)
       table.put("floorIndexerAppliedVoltageVolts", floorIndexerAppliedVoltage.inVolts)
       table.put("floorIndexerTemperatureCelsius", floorIndexerTemperature.inCelsius)
 
       table.put("sideRollerIndexerVelocityRPM", sideRollerIndexerVelocity.inRotationsPerMinute)
-      table.put("sideRollerIndexerAccelerationRPMPM", sideRollerIndexerAcceleration.inRotationsPerMinutePerMinute)
+      table.put(
+          "sideRollerIndexerAccelerationRPMPM",
+          sideRollerIndexerAcceleration.inRotationsPerMinutePerMinute)
       table.put("sideRollerIndexerSupplyCurrentAmps", sideRollerIndexerSupplyCurrent.inAmperes)
       table.put("sideRollerIndexerStatorCurrentAmps", sideRollerIndexerStatorCurrent.inAmperes)
       table.put("sideRollerIndexerAppliedVoltageVolts", sideRollerIndexerAppliedVoltage.inVolts)
       table.put("sideRollerIndexerTemperatureCelsius", sideRollerIndexerTemperature.inCelsius)
 
       table.put("topBeltIndexerVelocityRPM", topBeltIndexerVelocity.inRotationsPerMinute)
-      table.put("topBeltIndexerAccelerationRPMPM", topBeltIndexerAcceleration.inRotationsPerMinutePerMinute)
+      table.put(
+          "topBeltIndexerAccelerationRPMPM",
+          topBeltIndexerAcceleration.inRotationsPerMinutePerMinute)
       table.put("topBeltIndexerSupplyCurrentAmps", topBeltIndexerSupplyCurrent.inAmperes)
       table.put("topBeltIndexerStatorCurrentAmps", topBeltIndexerStatorCurrent.inAmperes)
       table.put("topBeltIndexerAppliedVoltageVolts", topBeltIndexerAppliedVoltage.inVolts)
       table.put("topBeltIndexerTemperatureCelsius", topBeltIndexerTemperature.inCelsius)
 
       table.put("bottomBeltIndexerVelocityRPM", bottomBeltIndexerVelocity.inRotationsPerMinute)
-      table.put("bottomBeltIndexerAccelerationRPMPM", bottomBeltIndexerAcceleration.inRotationsPerMinutePerMinute)
+      table.put(
+          "bottomBeltIndexerAccelerationRPMPM",
+          bottomBeltIndexerAcceleration.inRotationsPerMinutePerMinute)
       table.put("bottomBeltIndexerSupplyCurrentAmps", bottomBeltIndexerSupplyCurrent.inAmperes)
       table.put("bottomBeltIndexerStatorCurrentAmps", bottomBeltIndexerStatorCurrent.inAmperes)
       table.put("bottomBeltIndexerAppliedVoltageVolts", bottomBeltIndexerAppliedVoltage.inVolts)
@@ -82,15 +92,19 @@ interface IndexerIO {
       table.get("floorTopIndexerVelocityRPM", floorTopIndexerVelocity.inRotationsPerMinute).let {
         floorTopIndexerVelocity = it.rotations.perMinute
       }
-      table.get("floorBottomIndexerVelocityRPM", floorBottomIndexerVelocity.inRotationsPerMinute).let {
-        floorBottomIndexerVelocity = it.rotations.perMinute
-      }
-      table.get("floorTopIndexerAccelerationRPMPM", floorTopIndexerAcceleration.inRotationsPerMinutePerMinute).let {
-        floorTopIndexerAcceleration = it.rotations.perMinute.perMinute
-      }
-      table.get("floorBottomIndexerAccelerationRPMPM", floorBottomIndexerAcceleration.inRotationsPerMinutePerMinute).let {
-        floorBottomIndexerAcceleration = it.rotations.perMinute.perMinute
-      }
+      table
+          .get("floorBottomIndexerVelocityRPM", floorBottomIndexerVelocity.inRotationsPerMinute)
+          .let { floorBottomIndexerVelocity = it.rotations.perMinute }
+      table
+          .get(
+              "floorTopIndexerAccelerationRPMPM",
+              floorTopIndexerAcceleration.inRotationsPerMinutePerMinute)
+          .let { floorTopIndexerAcceleration = it.rotations.perMinute.perMinute }
+      table
+          .get(
+              "floorBottomIndexerAccelerationRPMPM",
+              floorBottomIndexerAcceleration.inRotationsPerMinutePerMinute)
+          .let { floorBottomIndexerAcceleration = it.rotations.perMinute.perMinute }
       table.get("floorIndexerSupplyCurrentAmps", floorIndexerSupplyCurrent.inAmperes).let {
         floorIndexerSupplyCurrent = it.amps
       }
@@ -104,21 +118,23 @@ interface IndexerIO {
         floorIndexerTemperature = it.celsius
       }
 
-      table.get("sideRollerIndexerVelocityRPM", sideRollerIndexerVelocity.inRotationsPerMinute).let {
-        sideRollerIndexerVelocity = it.rotations.perMinute
-      }
-      table.get("sideRollerIndexerAccelerationRPMPM", sideRollerIndexerAcceleration.inRotationsPerMinutePerMinute).let {
-        sideRollerIndexerAcceleration = it.rotations.perMinute.perMinute
-      }
-      table.get("sideRollerIndexerSupplyCurrentAmps", sideRollerIndexerSupplyCurrent.inAmperes).let {
-        sideRollerIndexerSupplyCurrent = it.amps
-      }
-      table.get("sideRollerIndexerStatorCurrentAmps", sideRollerIndexerStatorCurrent.inAmperes).let {
-        sideRollerIndexerStatorCurrent = it.amps
-      }
-      table.get("sideRollerIndexerAppliedVoltageVolts", sideRollerIndexerAppliedVoltage.inVolts).let {
-        sideRollerIndexerAppliedVoltage = it.volts
-      }
+      table
+          .get("sideRollerIndexerVelocityRPM", sideRollerIndexerVelocity.inRotationsPerMinute)
+          .let { sideRollerIndexerVelocity = it.rotations.perMinute }
+      table
+          .get(
+              "sideRollerIndexerAccelerationRPMPM",
+              sideRollerIndexerAcceleration.inRotationsPerMinutePerMinute)
+          .let { sideRollerIndexerAcceleration = it.rotations.perMinute.perMinute }
+      table
+          .get("sideRollerIndexerSupplyCurrentAmps", sideRollerIndexerSupplyCurrent.inAmperes)
+          .let { sideRollerIndexerSupplyCurrent = it.amps }
+      table
+          .get("sideRollerIndexerStatorCurrentAmps", sideRollerIndexerStatorCurrent.inAmperes)
+          .let { sideRollerIndexerStatorCurrent = it.amps }
+      table
+          .get("sideRollerIndexerAppliedVoltageVolts", sideRollerIndexerAppliedVoltage.inVolts)
+          .let { sideRollerIndexerAppliedVoltage = it.volts }
       table.get("sideRollerIndexerTemperatureCelsius", sideRollerIndexerTemperature.inCelsius).let {
         sideRollerIndexerTemperature = it.celsius
       }
@@ -126,9 +142,11 @@ interface IndexerIO {
       table.get("topBeltIndexerVelocityRPM", topBeltIndexerVelocity.inRotationsPerMinute).let {
         topBeltIndexerVelocity = it.rotations.perMinute
       }
-      table.get("topBeltIndexerAccelerationRPMPM", topBeltIndexerAcceleration.inRotationsPerMinutePerMinute).let {
-        topBeltIndexerAcceleration = it.rotations.perMinute.perMinute
-      }
+      table
+          .get(
+              "topBeltIndexerAccelerationRPMPM",
+              topBeltIndexerAcceleration.inRotationsPerMinutePerMinute)
+          .let { topBeltIndexerAcceleration = it.rotations.perMinute.perMinute }
       table.get("topBeltIndexerSupplyCurrentAmps", topBeltIndexerSupplyCurrent.inAmperes).let {
         topBeltIndexerSupplyCurrent = it.amps
       }
@@ -142,21 +160,23 @@ interface IndexerIO {
         topBeltIndexerTemperature = it.celsius
       }
 
-      table.get("bottomBeltIndexerVelocityRPM", bottomBeltIndexerVelocity.inRotationsPerMinute).let {
-        bottomBeltIndexerVelocity = it.rotations.perMinute
-      }
-      table.get("bottomBeltIndexerAccelerationRPMPM", bottomBeltIndexerAcceleration.inRotationsPerMinutePerMinute).let {
-        bottomBeltIndexerAcceleration = it.rotations.perMinute.perMinute
-      }
-      table.get("bottomBeltIndexerSupplyCurrentAmps", bottomBeltIndexerSupplyCurrent.inAmperes).let {
-        bottomBeltIndexerSupplyCurrent = it.amps
-      }
-      table.get("bottomBeltIndexerStatorCurrentAmps", bottomBeltIndexerStatorCurrent.inAmperes).let {
-        bottomBeltIndexerStatorCurrent = it.amps
-      }
-      table.get("bottomBeltIndexerAppliedVoltageVolts", bottomBeltIndexerAppliedVoltage.inVolts).let {
-        bottomBeltIndexerAppliedVoltage = it.volts
-      }
+      table
+          .get("bottomBeltIndexerVelocityRPM", bottomBeltIndexerVelocity.inRotationsPerMinute)
+          .let { bottomBeltIndexerVelocity = it.rotations.perMinute }
+      table
+          .get(
+              "bottomBeltIndexerAccelerationRPMPM",
+              bottomBeltIndexerAcceleration.inRotationsPerMinutePerMinute)
+          .let { bottomBeltIndexerAcceleration = it.rotations.perMinute.perMinute }
+      table
+          .get("bottomBeltIndexerSupplyCurrentAmps", bottomBeltIndexerSupplyCurrent.inAmperes)
+          .let { bottomBeltIndexerSupplyCurrent = it.amps }
+      table
+          .get("bottomBeltIndexerStatorCurrentAmps", bottomBeltIndexerStatorCurrent.inAmperes)
+          .let { bottomBeltIndexerStatorCurrent = it.amps }
+      table
+          .get("bottomBeltIndexerAppliedVoltageVolts", bottomBeltIndexerAppliedVoltage.inVolts)
+          .let { bottomBeltIndexerAppliedVoltage = it.volts }
       table.get("bottomBeltIndexerTemperatureCelsius", bottomBeltIndexerTemperature.inCelsius).let {
         bottomBeltIndexerTemperature = it.celsius
       }

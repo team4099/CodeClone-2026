@@ -25,14 +25,12 @@ interface FeederIO {
 
     override fun toLog(table: LogTable) {
       table.put("feederVelocityRPM", feederVelocity.inRotationsPerMinute)
-      table.put(
-        "feederAccelerationRPMPM",
-        feederAcceleration.inRotationsPerMinutePerMinute)
+      table.put("feederAccelerationRPMPM", feederAcceleration.inRotationsPerMinutePerMinute)
       table.put("feederSupplyCurrentAmps", feederSupplyCurrent.inAmperes)
       table.put("feederStatorCurrentAmps", feederStatorCurrent.inAmperes)
       table.put("feederAppliedVoltageVolts", feederAppliedVoltage.inVolts)
       table.put("feederTemperatureCelsius", feederTemperature.inCelsius)
-      }
+    }
 
     override fun fromLog(table: LogTable) {
       table.get("feederVelocityRPM", feederVelocity.inRotationsPerMinute).let {

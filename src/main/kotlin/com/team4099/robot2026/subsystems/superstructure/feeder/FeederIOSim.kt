@@ -18,21 +18,20 @@ import org.team4099.lib.units.perSecond
 
 object FeederIOSim : FeederIO {
   private val feederSim =
-    FlywheelSim(
-      LinearSystemId.createFlywheelSystem(
-        DCMotor.getKrakenX60Foc(1),
-        FeederConstants.MOMENT_OF_INERTIA.inKilogramsMeterSquared,
-        1.0 / FeederConstants.GEAR_RATIO,
-      ),
-      DCMotor.getKrakenX60Foc(1))
+      FlywheelSim(
+          LinearSystemId.createFlywheelSystem(
+              DCMotor.getKrakenX60Foc(1),
+              FeederConstants.MOMENT_OF_INERTIA.inKilogramsMeterSquared,
+              1.0 / FeederConstants.GEAR_RATIO,
+          ),
+          DCMotor.getKrakenX60Foc(1))
 
   private var appliedVoltage = 0.0.volts
 
   override fun updateInputs(inputs: FeederIO.FeederInputs) {
     feederSim.update(Constants.Universal.LOOP_PERIOD_TIME.inSeconds)
     inputs.feederVelocity = feederSim.angularVelocityRadPerSec.radians.perSecond
-    inputs.feederAcceleration =
-      feederSim.angularAccelerationRadPerSecSq.radians.perSecond.perSecond
+    inputs.feederAcceleration = feederSim.angularAccelerationRadPerSecSq.radians.perSecond.perSecond
     inputs.feederAppliedVoltage = appliedVoltage
     inputs.feederSupplyCurrent = 0.0.amps
     inputs.feederStatorCurrent = feederSim.currentDrawAmps.amps
@@ -41,8 +40,7 @@ object FeederIOSim : FeederIO {
 
   override fun setVoltage(voltage: ElectricalPotential) {
     val clampedVoltage =
-      clamp(
-        voltage, -FeederConstants.VOLTAGE_COMPENSATION, FeederConstants.VOLTAGE_COMPENSATION)
+        clamp(voltage, -FeederConstants.VOLTAGE_COMPENSATION, FeederConstants.VOLTAGE_COMPENSATION)
     feederSim.setInputVoltage(clampedVoltage.inVolts)
     appliedVoltage = clampedVoltage
   }
