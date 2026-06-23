@@ -21,7 +21,7 @@ object IndexerIOSim : IndexerIO {
       FlywheelSim(
           LinearSystemId.createFlywheelSystem(
               DCMotor.getKrakenX60Foc(1),
-              IndexerConstants.FloorConstants.MOMENT_OF_INERTIA.inKilogramsMeterSquared,
+              IndexerConstants.FloorConstants.TOP_MOMENT_OF_INERTIA.inKilogramsMeterSquared,
               1.0 / IndexerConstants.FloorConstants.TOP_GEAR_RATIO,
           ),
           DCMotor.getKrakenX60Foc(1))
@@ -29,10 +29,11 @@ object IndexerIOSim : IndexerIO {
     FlywheelSim(
       LinearSystemId.createFlywheelSystem(
         DCMotor.getKrakenX60Foc(1),
-        IndexerConstants.FloorConstants.MOMENT_OF_INERTIA.inKilogramsMeterSquared,
+        IndexerConstants.FloorConstants.BOTTOM_MOMENT_OF_INERTIA.inKilogramsMeterSquared,
         1.0 / IndexerConstants.FloorConstants.BOTTOM_GEAR_RATIO,
       ),
       DCMotor.getKrakenX60Foc(1))
+
   private val sideRollerIndexerSim =
     FlywheelSim(
       LinearSystemId.createFlywheelSystem(
@@ -41,14 +42,23 @@ object IndexerIOSim : IndexerIO {
         1.0 / IndexerConstants.SideRollerConstants.GEAR_RATIO,
       ),
       DCMotor.getKrakenX44Foc(1))
-  private val beltIndexerSim =
+
+  private val beltTopIndexerSim =
     FlywheelSim(
       LinearSystemId.createFlywheelSystem(
-        DCMotor.getKrakenX44Foc(2),
-        IndexerConstants.BeltConstants.MOMENT_OF_INERTIA.inKilogramsMeterSquared,
+        DCMotor.getKrakenX44Foc(1),
+        IndexerConstants.BeltConstants.TOP_MOMENT_OF_INERTIA.inKilogramsMeterSquared,
         1.0 / IndexerConstants.BeltConstants.GEAR_RATIO,
       ),
-      DCMotor.getKrakenX44Foc(2))
+      DCMotor.getKrakenX44Foc(1))
+  private val beltBottomIndexerSim =
+    FlywheelSim(
+      LinearSystemId.createFlywheelSystem(
+        DCMotor.getKrakenX44Foc(1),
+        IndexerConstants.BeltConstants.BOTTOM_MOMENT_OF_INERTIA.inKilogramsMeterSquared,
+        1.0 / IndexerConstants.BeltConstants.GEAR_RATIO,
+      ),
+      DCMotor.getKrakenX44Foc(1))
 
   private var floorAppliedVoltage = 0.0.volts
   private var sideRollerAppliedVoltage = 0.0.volts
@@ -58,8 +68,8 @@ object IndexerIOSim : IndexerIO {
     floorTopIndexerSim.update(Constants.Universal.LOOP_PERIOD_TIME.inSeconds)
     floorBottomIndexerSim.update(Constants.Universal.LOOP_PERIOD_TIME.inSeconds)
     sideRollerIndexerSim.update(Constants.Universal.LOOP_PERIOD_TIME.inSeconds)
-    beltIndexerSim.update(Constants.Universal.LOOP_PERIOD_TIME.inSeconds)
-
+    beltTopIndexerSim.update(Constants.Universal.LOOP_PERIOD_TIME.inSeconds)
+    beltBottomIndexerSim.update(Constants.Universal.LOOP_PERIOD_TIME.inSeconds)
 
     inputs.floorTopIndexerVelocity = floorTopIndexerSim.angularVelocityRadPerSec.radians.perSecond
     inputs.floorBottomIndexerVelocity = floorBottomIndexerSim.angularVelocityRadPerSec.radians.perSecond
@@ -80,20 +90,20 @@ object IndexerIOSim : IndexerIO {
     inputs.sideRollerIndexerStatorCurrent = sideRollerIndexerSim.currentDrawAmps.amps
     inputs.sideRollerIndexerTemperature = 0.0.celsius
 
-    inputs.topBeltIndexerVelocity = beltIndexerSim.angularVelocityRadPerSec.radians.perSecond
+    inputs.topBeltIndexerVelocity = beltTopIndexerSim.angularVelocityRadPerSec.radians.perSecond
     inputs.topBeltIndexerAcceleration =
-      beltIndexerSim.angularAccelerationRadPerSecSq.radians.perSecond.perSecond
+      beltTopIndexerSim.angularAccelerationRadPerSecSq.radians.perSecond.perSecond
     inputs.topBeltIndexerAppliedVoltage = beltAppliedVoltage
     inputs.topBeltIndexerSupplyCurrent = 0.0.amps
-    inputs.topBeltIndexerStatorCurrent = beltIndexerSim.currentDrawAmps.amps
+    inputs.topBeltIndexerStatorCurrent = beltTopIndexerSim.currentDrawAmps.amps
     inputs.topBeltIndexerTemperature = 0.0.celsius
 
-    inputs.bottomBeltIndexerVelocity = beltIndexerSim.angularVelocityRadPerSec.radians.perSecond
+    inputs.bottomBeltIndexerVelocity = beltBottomIndexerSim.angularVelocityRadPerSec.radians.perSecond
     inputs.bottomBeltIndexerAcceleration =
-      beltIndexerSim.angularAccelerationRadPerSecSq.radians.perSecond.perSecond
+      beltBottomIndexerSim.angularAccelerationRadPerSecSq.radians.perSecond.perSecond
     inputs.bottomBeltIndexerAppliedVoltage = beltAppliedVoltage
     inputs.bottomBeltIndexerSupplyCurrent = 0.0.amps
-    inputs.bottomBeltIndexerStatorCurrent = beltIndexerSim.currentDrawAmps.amps
+    inputs.bottomBeltIndexerStatorCurrent = beltBottomIndexerSim.currentDrawAmps.amps
     inputs.bottomBeltIndexerTemperature = 0.0.celsius
   }
 
@@ -113,7 +123,8 @@ object IndexerIOSim : IndexerIO {
     floorTopIndexerSim.setInputVoltage(floorClampedVoltage.inVolts)
     floorBottomIndexerSim.setInputVoltage(floorClampedVoltage.inVolts)
     sideRollerIndexerSim.setInputVoltage(sideRollerClampedVoltage.inVolts)
-    beltIndexerSim.setInputVoltage(beltClampedVoltage.inVolts)
+    beltTopIndexerSim.setInputVoltage(beltClampedVoltage.inVolts)
+    beltBottomIndexerSim.setInputVoltage(beltClampedVoltage.inVolts)
 
     floorAppliedVoltage = floorClampedVoltage
     sideRollerAppliedVoltage = sideRollerClampedVoltage

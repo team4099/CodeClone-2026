@@ -1,6 +1,5 @@
 package com.team4099.robot2026.subsystems.superstructure.indexer
 
-import com.team4099.robot2026.config.constants.IndexerConstants
 import com.team4099.robot2026.subsystems.superstructure.Request.IndexerRequest
 import com.team4099.robot2026.util.ControlledByStateMachine
 import com.team4099.robot2026.util.CustomLogger
@@ -37,7 +36,6 @@ class Indexer(private val io: IndexerIO) : ControlledByStateMachine() {
         nextState = fromRequestToState(currentRequest)
       }
       IndexerState.IDLE -> {
-        io.setVelocity(IndexerConstants.IDLE_VELOCITY)
         nextState = fromRequestToState(currentRequest)
       }
       IndexerState.OPEN_LOOP -> {

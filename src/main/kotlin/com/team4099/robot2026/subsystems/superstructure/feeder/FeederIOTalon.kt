@@ -104,4 +104,8 @@ object FeederIOTalon : FeederIO {
         upperBound = FeederConstants.VOLTAGE_COMPENSATION)
     feederTalon.setControl(voltageOut.withOutput(clampedVoltage.inVolts))
   }
+
+  override fun setBrakeMode(brake: Boolean) {
+    feederTalon.setNeutralMode(if (brake) NeutralModeValue.Brake else NeutralModeValue.Coast)
+  }
 }

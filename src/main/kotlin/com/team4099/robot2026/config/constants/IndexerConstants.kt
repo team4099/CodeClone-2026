@@ -26,14 +26,15 @@ import org.team4099.lib.units.perSecond
 
 object IndexerConstants {
   object FloorConstants {
-    const val TOP_GEAR_RATIO: Double = 435.0 / 112.0
-    const val BOTTOM_GEAR_RATIO: Double = 29.0 / 8.0
+    const val TOP_GEAR_RATIO: Double = (16.0 / 58.0) * (28.0/30.0)
+    const val BOTTOM_GEAR_RATIO: Double = 16.0 / 58.0
 
     val STATOR_CURRENT_LIMIT = 40.0.amps
     val SUPPLY_CURRENT_LIMIT = 40.0.amps
 
     val VOLTAGE_COMPENSATION = 12.0.volts
-    val MOMENT_OF_INERTIA = 0.kilo.grams.meterSquared
+    val TOP_MOMENT_OF_INERTIA = 0.000015.kilo.grams.meterSquared
+    val BOTTOM_MOMENT_OF_INERTIA = 0.000030.kilo.grams.meterSquared
     val MAX_ACCELERATION: AngularAcceleration = 0.rotations.perSecond.perSecond
     val MAX_VELOCITY: AngularVelocity = 0.rotations.perSecond
     val INDEXER_TOLERANCE = 0.0.rotations.perMinute
@@ -41,13 +42,14 @@ object IndexerConstants {
   }
 
   object BeltConstants {
-    const val GEAR_RATIO: Double = 29.0 / 8.0
+    const val GEAR_RATIO: Double = 16.0 / 58.0
 
     val STATOR_CURRENT_LIMIT = 40.0.amps
     val SUPPLY_CURRENT_LIMIT = 40.0.amps
 
     val VOLTAGE_COMPENSATION = 12.0.volts
-    val MOMENT_OF_INERTIA = 0.kilo.grams.meterSquared
+    val TOP_MOMENT_OF_INERTIA = 0.0000057.kilo.grams.meterSquared
+    val BOTTOM_MOMENT_OF_INERTIA = 0.0000065.kilo.grams.meterSquared
     val MAX_ACCELERATION: AngularAcceleration = 0.rotations.perSecond.perSecond
     val MAX_VELOCITY: AngularVelocity = 0.rotations.perSecond
     val INDEXER_TOLERANCE = 0.0.rotations.perMinute
@@ -55,13 +57,13 @@ object IndexerConstants {
   }
 
   object SideRollerConstants {
-    const val GEAR_RATIO: Double = 5.0 / 2.0
+    const val GEAR_RATIO: Double = 16.0 / 40.0
 
     val STATOR_CURRENT_LIMIT = 40.0.amps
     val SUPPLY_CURRENT_LIMIT = 40.0.amps
 
     val VOLTAGE_COMPENSATION = 12.0.volts
-    val MOMENT_OF_INERTIA = 0.kilo.grams.meterSquared
+    val MOMENT_OF_INERTIA = 0.0000050.kilo.grams.meterSquared
     val MAX_ACCELERATION: AngularAcceleration = 0.rotations.perSecond.perSecond
     val MAX_VELOCITY: AngularVelocity = 0.rotations.perSecond
     val INDEXER_TOLERANCE = 0.0.rotations.perMinute

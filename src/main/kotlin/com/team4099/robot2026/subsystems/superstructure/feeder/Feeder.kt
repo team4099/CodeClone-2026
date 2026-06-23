@@ -1,6 +1,5 @@
 package com.team4099.robot2026.subsystems.superstructure.feeder
 
-import com.team4099.robot2026.config.constants.FeederConstants
 import com.team4099.robot2026.subsystems.superstructure.Request.FeederRequest
 import com.team4099.robot2026.util.ControlledByStateMachine
 import com.team4099.robot2026.util.CustomLogger
@@ -37,7 +36,6 @@ class Feeder(private val io: FeederIO) : ControlledByStateMachine() {
         nextState = fromRequestToState(currentRequest)
       }
       FeederState.IDLE -> {
-        io.setVelocity(FeederConstants.VELOCITIES.IDLE_VELOCITY)
         nextState = fromRequestToState(currentRequest)
       }
       FeederState.OPEN_LOOP -> {
