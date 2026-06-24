@@ -36,6 +36,10 @@ object Constants {
     val whoami = argToEnum<WHOAMI>(System.getProperty("robot"))
   }
 
+  object Aim {
+    val MOTOR_ID = 99
+  }
+
   object MOTOR_CONSTANTS {
     // https://ctre.download/files/datasheet/Motor%20Performance%20Analysis%20Report.pdf
     const val KRAKENX60FOC_kT = 0.01981
