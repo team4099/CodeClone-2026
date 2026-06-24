@@ -40,6 +40,15 @@ object Constants {
     val MOTOR_ID = 99
   }
 
+  object Hood {
+    val MOTOR_ID = 99
+  }
+
+  object Flywheel {
+    val LEADER_MOTOR_ID = 67
+    val FOLLOWER_MOTOR_ID = 41
+  }
+
   object MOTOR_CONSTANTS {
     // https://ctre.download/files/datasheet/Motor%20Performance%20Analysis%20Report.pdf
     const val KRAKENX60FOC_kT = 0.01981

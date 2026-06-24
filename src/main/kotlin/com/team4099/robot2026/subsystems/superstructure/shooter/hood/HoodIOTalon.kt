@@ -48,7 +48,7 @@ import edu.wpi.first.units.measure.Temperature as WPILibTemperature
 import edu.wpi.first.units.measure.Voltage as WPILibVoltage
 
 object HoodIOTalon: HoodIO {
-  private val Talon = TalonFX(Constants.Aim.MOTOR_ID)
+  private val Talon = TalonFX(Constants.Hood.MOTOR_ID)
   private val motionMagicControl: MotionMagicVelocityTorqueCurrentFOC = MotionMagicVelocityTorqueCurrentFOC(-1000.0)
   private val voltReq = VoltageOut(0.0).withEnableFOC(true)
   private val configs: TalonFXConfiguration = TalonFXConfiguration()

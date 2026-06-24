@@ -1,8 +1,8 @@
-package com.team4099.robot2026.subsystems.superstructure.shooter
+package com.team4099.robot2026.subsystems.superstructure.shooter.flywheel
 
 import com.team4099.lib.math.clamp
+import com.team4099.robot2026.config.constants.AimConstants
 import com.team4099.robot2026.config.constants.Constants
-import com.team4099.robot2026.config.constants.ShooterConstants
 import edu.wpi.first.math.system.plant.DCMotor
 import edu.wpi.first.math.system.plant.LinearSystemId
 import edu.wpi.first.wpilibj.simulation.FlywheelSim
@@ -34,18 +34,18 @@ object FlywheelIOSim : FlywheelIO {
         FlywheelSim(
             LinearSystemId.createFlywheelSystem(
                 DCMotor.getKrakenX60(2),
-                ShooterConstants.MOMENT_OF_INERTIA.inKilogramsMeterSquared,
-                1.0 / ShooterConstants.GEAR_RATIO,
+                AimConstants.MOMENT_OF_INERTIA.inKilogramsMeterSquared,
+                1.0 / AimConstants.GEAR_RATIO,
             ),
             DCMotor.getKrakenX60(2))
 
     private val flywheelPIDController =
         PIDController(
-            ShooterConstants.PID.SIM_KP, ShooterConstants.PID.SIM_KI, ShooterConstants.PID.SIM_KD)
+            AimConstants.PID.SIM_KP, AimConstants.PID.SIM_KI, AimConstants.PID.SIM_KD)
 
     private var flywheelFFController =
         SimpleMotorFeedforward(
-            ShooterConstants.PID.SIM_KS, ShooterConstants.PID.SIM_KV, ShooterConstants.PID.SIM_KA)
+            AimConstants.PID.SIM_KS, AimConstants.PID.SIM_KV, AimConstants.PID.SIM_KA)
 
     override fun updateInputs(inputs: FlywheelIO.FlywheelInputs) {
         flywheelSim.update(Constants.Universal.LOOP_PERIOD_TIME.inSeconds)
@@ -69,7 +69,7 @@ object FlywheelIOSim : FlywheelIO {
     override fun setVoltage(voltage: ElectricalPotential) {
         val clampedVoltage =
             clamp(
-                voltage, -ShooterConstants.VOLTAGE_COMPENSATION, ShooterConstants.VOLTAGE_COMPENSATION)
+                voltage, -AimConstants.VOLTAGE_COMPENSATION, AimConstants.VOLTAGE_COMPENSATION)
         flywheelSim.setInputVoltage(clampedVoltage.inVolts)
     }
 

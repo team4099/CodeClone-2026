@@ -1,7 +1,21 @@
-package com.team4099.robot2026.subsystems.superstructure.shooter
+package com.team4099.robot2026.subsystems.superstructure.shooter.flywheel
 
-import org.littletonrobotics.junction.LogTable
-import org.littletonrobotics.junction.inputs.LoggableInputs
+import com.ctre.phoenix6.BaseStatusSignal
+import com.ctre.phoenix6.StatusSignal
+import com.ctre.phoenix6.configs.Slot0Configs
+import com.ctre.phoenix6.configs.Slot1Configs
+import com.ctre.phoenix6.configs.TalonFXConfiguration
+import com.ctre.phoenix6.controls.Follower
+import com.ctre.phoenix6.controls.MotionMagicVelocityTorqueCurrentFOC
+import com.ctre.phoenix6.controls.VoltageOut
+import com.ctre.phoenix6.hardware.TalonFX
+import com.ctre.phoenix6.signals.InvertedValue
+import com.ctre.phoenix6.signals.MotorAlignmentValue
+import com.ctre.phoenix6.signals.NeutralModeValue
+import com.team4099.lib.math.clamp
+import com.team4099.robot2026.config.constants.Constants
+import com.team4099.robot2026.config.constants.FlywheelConstants
+import com.team4099.robot2026.util.CustomLogger
 import org.team4099.lib.units.AngularVelocity
 import org.team4099.lib.units.Fraction
 import org.team4099.lib.units.base.Ampere
@@ -9,7 +23,7 @@ import org.team4099.lib.units.base.Second
 import org.team4099.lib.units.base.amps
 import org.team4099.lib.units.base.celsius
 import org.team4099.lib.units.base.inAmperes
-import org.team4099.lib.units.base.inCelsius
+import org.team4099.lib.units.ctreAngularMechanismSensor
 import org.team4099.lib.units.derived.AccelerationFeedforward
 import org.team4099.lib.units.derived.DerivativeGain
 import org.team4099.lib.units.derived.ElectricalPotential
@@ -18,13 +32,19 @@ import org.team4099.lib.units.derived.ProportionalGain
 import org.team4099.lib.units.derived.Radian
 import org.team4099.lib.units.derived.StaticFeedforward
 import org.team4099.lib.units.derived.VelocityFeedforward
-import org.team4099.lib.units.derived.Volt
+import org.team4099.lib.units.derived.inAmpsPerRadianPerSecond
+import org.team4099.lib.units.derived.inAmpsPerRadians
+import org.team4099.lib.units.derived.inAmpsPerRadiansPerSecond
+import org.team4099.lib.units.derived.inAmpsPerRadiansPerSecondPerSecond
 import org.team4099.lib.units.derived.inVolts
 import org.team4099.lib.units.derived.rotations
 import org.team4099.lib.units.derived.volts
-import org.team4099.lib.units.inRotationsPerMinute
-import org.team4099.lib.units.inRotationsPerMinutePerMinute
-import org.team4099.lib.units.perMinute
+import org.team4099.lib.units.perSecond
+import edu.wpi.first.units.measure.AngularAcceleration as WPILibAngularAcceleration
+import edu.wpi.first.units.measure.AngularVelocity as WPILibAngularVelocity
+import edu.wpi.first.units.measure.Current as WPILibCurrent
+import edu.wpi.first.units.measure.Temperature as WPILibTemperature
+import edu.wpi.first.units.measure.Voltage as WPILibVoltage
 
 object FlywheelIOTalon : FlywheelIO {
     private val leaderTalon: TalonFX = TalonFX(Constants.Flywheel.LEADER_MOTOR_ID)
@@ -83,7 +103,8 @@ object FlywheelIOTalon : FlywheelIO {
         followerAccelSignal = followerTalon.acceleration
 
         followerTalon.setControl(
-            Follower(Constants.Flywheel.LEADER_MOTOR_ID, MotorAlignmentValue.Opposed))
+            Follower(Constants.Flywheel.LEADER_MOTOR_ID, MotorAlignmentValue.Opposed)
+        )
     }
     private fun updateSignals() {
         BaseStatusSignal.refreshAll(
@@ -126,39 +147,23 @@ object FlywheelIOTalon : FlywheelIO {
         kP0: ProportionalGain<Fraction<Radian, Second>, Ampere>,
         kI0: IntegralGain<Fraction<Radian, Second>, Ampere>,
         kD0: DerivativeGain<Fraction<Radian, Second>, Ampere>,
-        kP1: ProportionalGain<Fraction<Radian, Second>, Ampere>,
-        kI1: IntegralGain<Fraction<Radian, Second>, Ampere>,
-        kD1: DerivativeGain<Fraction<Radian, Second>, Ampere>
     ) {
         slot0Configs.kP = kP0.inAmpsPerRadianPerSecond
         slot0Configs.kI = kI0.inAmpsPerRadians
         slot0Configs.kD = kD0.inAmpsPerRadiansPerSecondPerSecond
-        slot1Configs.kP = kP1.inAmpsPerRadianPerSecond
-        slot1Configs.kI = kI1.inAmpsPerRadians
-        slot1Configs.kD = kD1.inAmpsPerRadiansPerSecondPerSecond
         leaderTalon.configurator.apply(slot0Configs)
-        leaderTalon.configurator.apply(slot1Configs)
         followerTalon.configurator.apply(slot0Configs)
-        followerTalon.configurator.apply(slot1Configs)
     }
     override fun configureFFCurrent(
         kS0: StaticFeedforward<Ampere>,
         kV0: VelocityFeedforward<Radian, Ampere>,
         kA0: AccelerationFeedforward<Radian, Ampere>,
-        kS1: StaticFeedforward<Ampere>,
-        kV1: VelocityFeedforward<Radian, Ampere>,
-        kA1: AccelerationFeedforward<Radian, Ampere>,
     ) {
         slot0Configs.kS = kS0.inAmperes
         slot0Configs.kV = kV0.inAmpsPerRadiansPerSecond
         slot0Configs.kA = kA0.inAmpsPerRadiansPerSecondPerSecond
-        slot1Configs.kS = kS1.inAmperes
-        slot1Configs.kV = kV1.inAmpsPerRadiansPerSecond
-        slot1Configs.kA = kA1.inAmpsPerRadiansPerSecondPerSecond
         leaderTalon.configurator.apply(slot0Configs)
-        leaderTalon.configurator.apply(slot1Configs)
         followerTalon.configurator.apply(slot0Configs)
-        followerTalon.configurator.apply(slot1Configs)
     }
     override fun setVoltage(voltage: ElectricalPotential) {
         val clampedVoltage =
@@ -183,5 +188,4 @@ object FlywheelIOTalon : FlywheelIO {
         )
     }
 }
-}
-}
+

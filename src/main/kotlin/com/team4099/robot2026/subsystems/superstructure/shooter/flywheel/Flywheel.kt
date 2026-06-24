@@ -1,4 +1,4 @@
-package com.team4099.robot2026.subsystems.superstructure.shooter
+package com.team4099.robot2026.subsystems.superstructure.shooter.flywheel
 
 import com.ctre.phoenix6.SignalLogger
 import com.team4099.lib.logging.LoggedTunableValue
