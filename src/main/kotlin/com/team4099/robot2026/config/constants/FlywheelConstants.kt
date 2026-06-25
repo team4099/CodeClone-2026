@@ -11,7 +11,7 @@ import org.team4099.lib.units.perSecond
 
 object FlywheelConstants {
 
-  val GEAR_RATIO = 4.0/1.0
+  val GEAR_RATIO = 4.0 / 1.0
   val SUPPLY_CURRENT_LIMIT = 40.0.amps
   val STATOR_CURRENT_LIMIT = 80.0.amps
   val IDLE_VOLTAGE = 0.0.volts

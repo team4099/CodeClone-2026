@@ -4,7 +4,6 @@ import org.littletonrobotics.junction.LogTable
 import org.littletonrobotics.junction.inputs.LoggableInputs
 import org.team4099.lib.units.AngularVelocity
 import org.team4099.lib.units.Fraction
-import org.team4099.lib.units.base.Ampere
 import org.team4099.lib.units.base.Second
 import org.team4099.lib.units.base.Temperature
 import org.team4099.lib.units.base.amps
@@ -20,8 +19,6 @@ import org.team4099.lib.units.derived.Radian
 import org.team4099.lib.units.derived.StaticFeedforward
 import org.team4099.lib.units.derived.VelocityFeedforward
 import org.team4099.lib.units.derived.Volt
-import org.team4099.lib.units.derived.degrees
-import org.team4099.lib.units.derived.inDegrees
 import org.team4099.lib.units.derived.inRadians
 import org.team4099.lib.units.derived.inVolts
 import org.team4099.lib.units.derived.radians
@@ -32,7 +29,7 @@ import org.team4099.lib.units.inRotationsPerMinutePerMinute
 import org.team4099.lib.units.perMinute
 
 interface AimIO {
-  class AimInputs: LoggableInputs {
+  class AimInputs : LoggableInputs {
     var aimVelocity = 0.0.rotations.perMinute
     var aimAcceleration = 0.0.rotations.perMinute.perMinute
     var aimAngle = 0.0.radians
@@ -50,8 +47,12 @@ interface AimIO {
       table.get("AimSupplyCurrent", aimSupplyCurrent.inAmperes).let { aimSupplyCurrent = it.amps }
       table.get("AimTorqueCurrent", aimTorqueCurrent.inAmperes).let { aimTorqueCurrent = it.amps }
       table.get("AimTemperature", aimTemperature.inCelsius).let { aimTemperature = it.celsius }
-      table.get("AimVelocity", aimVelocity.inRotationsPerMinute).let { aimVelocity = it.rotations.perMinute }
-      table.get("AimAcceleration", aimAcceleration.inRotationsPerMinutePerMinute).let { aimAcceleration = it.rotations.perMinute.perMinute }
+      table.get("AimVelocity", aimVelocity.inRotationsPerMinute).let {
+        aimVelocity = it.rotations.perMinute
+      }
+      table.get("AimAcceleration", aimAcceleration.inRotationsPerMinutePerMinute).let {
+        aimAcceleration = it.rotations.perMinute.perMinute
+      }
       table.get("AimAngle", aimAngle.inRadians).let { aimAngle = it.radians }
     }
 
@@ -68,22 +69,21 @@ interface AimIO {
     }
   }
 
-  fun updateInputs(inputs: AimInputs){}
+  fun updateInputs(inputs: AimInputs) {}
 
-  fun setVelocity(velocity: AngularVelocity){}
+  fun setVelocity(velocity: AngularVelocity) {}
 
-  fun setVoltage(voltage: ElectricalPotential){}
+  fun setVoltage(voltage: ElectricalPotential) {}
 
   fun configurePIDVoltage(
-    kP: ProportionalGain<Fraction<Radian, Second>, Volt>,
-    kI: IntegralGain<Fraction<Radian, Second>, Volt>,
-    kD: DerivativeGain<Fraction<Radian, Second>, Volt>
+      kP: ProportionalGain<Fraction<Radian, Second>, Volt>,
+      kI: IntegralGain<Fraction<Radian, Second>, Volt>,
+      kD: DerivativeGain<Fraction<Radian, Second>, Volt>
   ) {}
 
   fun configureFFVoltage(
-    kS: StaticFeedforward<Volt>,
-    kV: VelocityFeedforward<Radian, Volt>,
-    kA: AccelerationFeedforward<Radian, Volt>,
+      kS: StaticFeedforward<Volt>,
+      kV: VelocityFeedforward<Radian, Volt>,
+      kA: AccelerationFeedforward<Radian, Volt>,
   ) {}
-
 }

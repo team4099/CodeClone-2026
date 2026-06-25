@@ -30,72 +30,73 @@ import org.team4099.lib.units.derived.volts
 import org.team4099.lib.units.perSecond
 
 object FlywheelIOSim : FlywheelIO {
-    private val flywheelSim: FlywheelSim =
-        FlywheelSim(
-            LinearSystemId.createFlywheelSystem(
-                DCMotor.getKrakenX60(2),
-                AimConstants.MOMENT_OF_INERTIA.inKilogramsMeterSquared,
-                1.0 / AimConstants.GEAR_RATIO,
-            ),
-            DCMotor.getKrakenX60(2))
+  private val flywheelSim: FlywheelSim =
+      FlywheelSim(
+          LinearSystemId.createFlywheelSystem(
+              DCMotor.getKrakenX60(2),
+              AimConstants.MOMENT_OF_INERTIA.inKilogramsMeterSquared,
+              1.0 / AimConstants.GEAR_RATIO,
+          ),
+          DCMotor.getKrakenX60(2))
 
-    private val flywheelPIDController =
-        PIDController(
-            AimConstants.PID.SIM_KP, AimConstants.PID.SIM_KI, AimConstants.PID.SIM_KD)
+  private val flywheelPIDController =
+      PIDController(AimConstants.PID.SIM_KP, AimConstants.PID.SIM_KI, AimConstants.PID.SIM_KD)
 
-    private var flywheelFFController =
-        SimpleMotorFeedforward(
-            AimConstants.PID.SIM_KS, AimConstants.PID.SIM_KV, AimConstants.PID.SIM_KA)
+  private var flywheelFFController =
+      SimpleMotorFeedforward(
+          AimConstants.PID.SIM_KS, AimConstants.PID.SIM_KV, AimConstants.PID.SIM_KA)
 
-    override fun updateInputs(inputs: FlywheelIO.FlywheelInputs) {
-        flywheelSim.update(Constants.Universal.LOOP_PERIOD_TIME.inSeconds)
-        inputs.flywheelLeaderVelocity = flywheelSim.angularVelocityRadPerSec.radians.perSecond
-        inputs.flywheelLeaderAcceleration = flywheelSim.angularAccelerationRadPerSecSq.radians.perSecond.perSecond
-        inputs.flywheelLeaderVoltage = flywheelSim.inputVoltage.volts
-        inputs.flywheelLeaderSupplyCurrent = 0.0.amps
-        inputs.flywheelLeaderStatorCurrent = flywheelSim.currentDrawAmps.amps
-        inputs.flywheelLeaderTorqueCurrent = flywheelSim.currentDrawAmps.amps.absoluteValue
-        inputs.flywheelLeaderTemperature = 0.0.celsius
+  override fun updateInputs(inputs: FlywheelIO.FlywheelInputs) {
+    flywheelSim.update(Constants.Universal.LOOP_PERIOD_TIME.inSeconds)
+    inputs.flywheelLeaderVelocity = flywheelSim.angularVelocityRadPerSec.radians.perSecond
+    inputs.flywheelLeaderAcceleration =
+        flywheelSim.angularAccelerationRadPerSecSq.radians.perSecond.perSecond
+    inputs.flywheelLeaderVoltage = flywheelSim.inputVoltage.volts
+    inputs.flywheelLeaderSupplyCurrent = 0.0.amps
+    inputs.flywheelLeaderStatorCurrent = flywheelSim.currentDrawAmps.amps
+    inputs.flywheelLeaderTorqueCurrent = flywheelSim.currentDrawAmps.amps.absoluteValue
+    inputs.flywheelLeaderTemperature = 0.0.celsius
 
-        inputs.flywheelFollowerVelocity = flywheelSim.angularVelocityRadPerSec.radians.perSecond
-        inputs.flywheelFollowerAcceleration = flywheelSim.angularAccelerationRadPerSecSq.radians.perSecond.perSecond
-        inputs.flywheelFollowerVoltage = flywheelSim.inputVoltage.volts
-        inputs.flywheelFollowerSupplyCurrent = 0.0.amps
-        inputs.flywheelFollowerStatorCurrent = flywheelSim.currentDrawAmps.amps
-        inputs.flywheelFollowerTorqueCurrent = flywheelSim.currentDrawAmps.amps.absoluteValue
-        inputs.flywheelFollowerTemperature = 0.0.celsius
-    }
+    inputs.flywheelFollowerVelocity = flywheelSim.angularVelocityRadPerSec.radians.perSecond
+    inputs.flywheelFollowerAcceleration =
+        flywheelSim.angularAccelerationRadPerSecSq.radians.perSecond.perSecond
+    inputs.flywheelFollowerVoltage = flywheelSim.inputVoltage.volts
+    inputs.flywheelFollowerSupplyCurrent = 0.0.amps
+    inputs.flywheelFollowerStatorCurrent = flywheelSim.currentDrawAmps.amps
+    inputs.flywheelFollowerTorqueCurrent = flywheelSim.currentDrawAmps.amps.absoluteValue
+    inputs.flywheelFollowerTemperature = 0.0.celsius
+  }
 
-    override fun setVoltage(voltage: ElectricalPotential) {
-        val clampedVoltage =
-            clamp(
-                voltage, -AimConstants.VOLTAGE_COMPENSATION, AimConstants.VOLTAGE_COMPENSATION)
-        flywheelSim.setInputVoltage(clampedVoltage.inVolts)
-    }
+  override fun setVoltage(voltage: ElectricalPotential) {
+    val clampedVoltage =
+        clamp(voltage, -AimConstants.VOLTAGE_COMPENSATION, AimConstants.VOLTAGE_COMPENSATION)
+    flywheelSim.setInputVoltage(clampedVoltage.inVolts)
+  }
 
-    override fun setVelocity(velocity: AngularVelocity) {
-        var pidOutput = flywheelPIDController.calculate(flywheelSim.angularVelocityRadPerSec.radians.perSecond, velocity)
-        if (pidOutput.inVolts.isNaN()) pidOutput = 0.volts
-        val ffOutput = flywheelFFController.calculateWithVelocities(flywheelSim.angularVelocityRadPerSec.radians.perSecond, velocity)
-        setVoltage(pidOutput + ffOutput)
-    }
+  override fun setVelocity(velocity: AngularVelocity) {
+    var pidOutput =
+        flywheelPIDController.calculate(
+            flywheelSim.angularVelocityRadPerSec.radians.perSecond, velocity)
+    if (pidOutput.inVolts.isNaN()) pidOutput = 0.volts
+    val ffOutput =
+        flywheelFFController.calculateWithVelocities(
+            flywheelSim.angularVelocityRadPerSec.radians.perSecond, velocity)
+    setVoltage(pidOutput + ffOutput)
+  }
 
-    override fun configurePIDVoltage(
-        kP: ProportionalGain<Fraction<Radian, Second>, Volt>,
-        kI: IntegralGain<Fraction<Radian, Second>, Volt>,
-        kD: DerivativeGain<Fraction<Radian, Second>, Volt>
-    ) {
-        flywheelPIDController.setPID(kP, kI, kD)
-    }
+  override fun configurePIDVoltage(
+      kP: ProportionalGain<Fraction<Radian, Second>, Volt>,
+      kI: IntegralGain<Fraction<Radian, Second>, Volt>,
+      kD: DerivativeGain<Fraction<Radian, Second>, Volt>
+  ) {
+    flywheelPIDController.setPID(kP, kI, kD)
+  }
 
-    override fun configureFFVoltage(
-        kS: StaticFeedforward<Volt>,
-        kV: VelocityFeedforward<Radian, Volt>,
-        kA: AccelerationFeedforward<Radian, Volt>
-    ) {
-        flywheelFFController = SimpleMotorFeedforward(kS, kV, kA)
-    }
+  override fun configureFFVoltage(
+      kS: StaticFeedforward<Volt>,
+      kV: VelocityFeedforward<Radian, Volt>,
+      kA: AccelerationFeedforward<Radian, Volt>
+  ) {
+    flywheelFFController = SimpleMotorFeedforward(kS, kV, kA)
+  }
 }
-
-
-

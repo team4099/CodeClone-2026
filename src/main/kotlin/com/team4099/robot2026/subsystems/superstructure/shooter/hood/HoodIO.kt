@@ -2,11 +2,6 @@ package com.team4099.robot2026.subsystems.superstructure.shooter.hood
 
 import org.littletonrobotics.junction.LogTable
 import org.littletonrobotics.junction.inputs.LoggableInputs
-import org.team4099.lib.units.AngularVelocity
-import org.team4099.lib.units.Fraction
-import org.team4099.lib.units.Value
-import org.team4099.lib.units.base.Ampere
-import org.team4099.lib.units.base.Second
 import org.team4099.lib.units.base.amps
 import org.team4099.lib.units.base.celsius
 import org.team4099.lib.units.base.inAmperes
@@ -21,19 +16,16 @@ import org.team4099.lib.units.derived.Radian
 import org.team4099.lib.units.derived.StaticFeedforward
 import org.team4099.lib.units.derived.VelocityFeedforward
 import org.team4099.lib.units.derived.Volt
-import org.team4099.lib.units.derived.degrees
 import org.team4099.lib.units.derived.inRadians
 import org.team4099.lib.units.derived.inVolts
 import org.team4099.lib.units.derived.radians
 import org.team4099.lib.units.derived.rotations
 import org.team4099.lib.units.derived.volts
-import org.team4099.lib.units.inRotationsPerMinute
 import org.team4099.lib.units.inRotationsPerMinutePerMinute
 import org.team4099.lib.units.perMinute
 
-
 interface HoodIO {
-  class HoodInputs: LoggableInputs {
+  class HoodInputs : LoggableInputs {
     var hoodVelocity = 0.0.volts
     var hoodAcceleration = 0.0.rotations.perMinute.perMinute
     var hoodVoltage = 0.0.volts
@@ -43,15 +35,22 @@ interface HoodIO {
     var hoodTorqueCurrent = 0.0.amps
     var hoodTemperature = 0.0.celsius
 
-
     override fun fromLog(table: LogTable) {
       table.get("HoodVoltage", hoodVoltage.inVolts).let { hoodVoltage = it.volts }
-      table.get("HoodStatorCurrent", hoodStatorCurrent.inAmperes).let { hoodStatorCurrent = it.amps }
-      table.get("HoodSupplyCurrent", hoodSupplyCurrent.inAmperes).let { hoodSupplyCurrent = it.amps }
-      table.get("HoodTorqueCurrent", hoodTorqueCurrent.inAmperes).let { hoodTorqueCurrent = it.amps }
+      table.get("HoodStatorCurrent", hoodStatorCurrent.inAmperes).let {
+        hoodStatorCurrent = it.amps
+      }
+      table.get("HoodSupplyCurrent", hoodSupplyCurrent.inAmperes).let {
+        hoodSupplyCurrent = it.amps
+      }
+      table.get("HoodTorqueCurrent", hoodTorqueCurrent.inAmperes).let {
+        hoodTorqueCurrent = it.amps
+      }
       table.get("HoodTemperature", hoodTemperature.inCelsius).let { hoodTemperature = it.celsius }
       table.get("HoodVelocity", hoodVelocity.inVolts).let { hoodVelocity = it.volts }
-      table.get("HoodAcceleration", hoodAcceleration.inRotationsPerMinutePerMinute).let { hoodAcceleration = it.rotations.perMinute.perMinute }
+      table.get("HoodAcceleration", hoodAcceleration.inRotationsPerMinutePerMinute).let {
+        hoodAcceleration = it.rotations.perMinute.perMinute
+      }
       table.get("HoodPosition", hoodPosition.inRadians).let { hoodPosition = it.radians }
     }
 
@@ -66,24 +65,22 @@ interface HoodIO {
       table.put("HoodPosition", hoodPosition.inRadians)
     }
   }
-  fun setVoltage(voltage: ElectricalPotential){}
 
-  fun updateInputs(inputs: HoodInputs){}
+  fun setVoltage(voltage: ElectricalPotential) {}
+
+  fun updateInputs(inputs: HoodInputs) {}
 
   fun configurePIDVoltage(
-    kP: ProportionalGain<Radian, Volt>,
-    kI: IntegralGain<Radian, Volt>,
-    kD: DerivativeGain<Radian, Volt>
+      kP: ProportionalGain<Radian, Volt>,
+      kI: IntegralGain<Radian, Volt>,
+      kD: DerivativeGain<Radian, Volt>
   ) {}
 
   fun configureFFVoltage(
-    kS: StaticFeedforward<Volt>,
-    kV: VelocityFeedforward<Radian, Volt>,
-    kA: AccelerationFeedforward<Radian, Volt>,
+      kS: StaticFeedforward<Volt>,
+      kV: VelocityFeedforward<Radian, Volt>,
+      kA: AccelerationFeedforward<Radian, Volt>,
   ) {}
 
   fun setPosition(position: Angle) {}
-
-  }
-
-
+}

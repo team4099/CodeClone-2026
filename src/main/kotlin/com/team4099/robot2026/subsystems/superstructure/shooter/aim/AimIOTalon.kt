@@ -1,5 +1,6 @@
 package com.team4099.robot2026.subsystems.superstructure.shooter.aim
 
+// heh
 import com.ctre.phoenix6.BaseStatusSignal
 import com.ctre.phoenix6.StatusSignal
 import com.ctre.phoenix6.configs.Slot0Configs
@@ -13,6 +14,11 @@ import com.team4099.lib.math.clamp
 import com.team4099.robot2026.config.constants.AimConstants
 import com.team4099.robot2026.config.constants.Constants
 import com.team4099.robot2026.util.CustomLogger
+import edu.wpi.first.units.measure.AngularAcceleration as WPILibAngularAcceleration
+import edu.wpi.first.units.measure.AngularVelocity as WPILibAngularVelocity
+import edu.wpi.first.units.measure.Current as WPILibCurrent
+import edu.wpi.first.units.measure.Temperature as WPILibTemperature
+import edu.wpi.first.units.measure.Voltage as WPILibVoltage
 import org.team4099.lib.units.AngularVelocity
 import org.team4099.lib.units.Fraction
 import org.team4099.lib.units.base.Second
@@ -29,11 +35,6 @@ import org.team4099.lib.units.derived.Radian
 import org.team4099.lib.units.derived.StaticFeedforward
 import org.team4099.lib.units.derived.VelocityFeedforward
 import org.team4099.lib.units.derived.Volt
-import org.team4099.lib.units.derived.inAmpsPerRadianPerSecond
-import org.team4099.lib.units.derived.inAmpsPerRadians
-import org.team4099.lib.units.derived.inAmpsPerRadiansPerSecond
-import org.team4099.lib.units.derived.inAmpsPerRadiansPerSecondPerSecond
-//heh
 import org.team4099.lib.units.derived.inVolts
 import org.team4099.lib.units.derived.inVoltsPerRadianPerSecond
 import org.team4099.lib.units.derived.inVoltsPerRadianPerSecondPerSecond
@@ -43,19 +44,16 @@ import org.team4099.lib.units.derived.inVoltsPerRadiansPerSecondPerSecond
 import org.team4099.lib.units.derived.rotations
 import org.team4099.lib.units.derived.volts
 import org.team4099.lib.units.perSecond
-import edu.wpi.first.units.measure.AngularAcceleration as WPILibAngularAcceleration
-import edu.wpi.first.units.measure.AngularVelocity as WPILibAngularVelocity
-import edu.wpi.first.units.measure.Current as WPILibCurrent
-import edu.wpi.first.units.measure.Temperature as WPILibTemperature
-import edu.wpi.first.units.measure.Voltage as WPILibVoltage
 
-object AimIOTalon: AimIO {
+object AimIOTalon : AimIO {
   private val Talon = TalonFX(Constants.Aim.MOTOR_ID)
-  private val motionMagicControl: MotionMagicVelocityTorqueCurrentFOC = MotionMagicVelocityTorqueCurrentFOC(-1000.0)
+  private val motionMagicControl: MotionMagicVelocityTorqueCurrentFOC =
+      MotionMagicVelocityTorqueCurrentFOC(-1000.0)
   private val voltReq = VoltageOut(0.0).withEnableFOC(true)
   private val configs: TalonFXConfiguration = TalonFXConfiguration()
   private val slot0Configs: Slot0Configs = configs.Slot0
-  private val Sensor = ctreAngularMechanismSensor(Talon, AimConstants.GEAR_RATIO, AimConstants.VOLTAGE_COMPENSATION)
+  private val Sensor =
+      ctreAngularMechanismSensor(Talon, AimConstants.GEAR_RATIO, AimConstants.VOLTAGE_COMPENSATION)
 
   private var StatorCurrentSignal: StatusSignal<WPILibCurrent>
   private var TorqueCurrentSignal: StatusSignal<WPILibCurrent>
@@ -65,7 +63,7 @@ object AimIOTalon: AimIO {
   private var AccelSignal: StatusSignal<WPILibAngularAcceleration>
   private var VelocitySignal: StatusSignal<WPILibAngularVelocity>
 
-  init{
+  init {
     Talon.clearStickyFaults()
 
     configs.CurrentLimits.SupplyCurrentLimit = AimConstants.SUPPLY_CURRENT_LIMIT.inAmperes
@@ -86,40 +84,47 @@ object AimIOTalon: AimIO {
     AccelSignal = Talon.acceleration
   }
 
-  private fun updateSignals(){
-    BaseStatusSignal.refreshAll(SupplyCurrentSignal, StatorCurrentSignal, TorqueCurrentSignal, VelocitySignal, TempSignal, VoltageSignal, AccelSignal)
+  private fun updateSignals() {
+    BaseStatusSignal.refreshAll(
+        SupplyCurrentSignal,
+        StatorCurrentSignal,
+        TorqueCurrentSignal,
+        VelocitySignal,
+        TempSignal,
+        VoltageSignal,
+        AccelSignal)
   }
 
   override fun updateInputs(inputs: AimIO.AimInputs) {
-      updateSignals()
+    updateSignals()
 
     inputs.aimVelocity = Sensor.velocity
-    inputs.aimAcceleration = (AccelSignal.valueAsDouble / AimConstants.GEAR_RATIO).rotations.perSecond.perSecond
-      //why do u do ts
+    inputs.aimAcceleration =
+        (AccelSignal.valueAsDouble / AimConstants.GEAR_RATIO).rotations.perSecond.perSecond
+    // why do u do ts
     inputs.aimTemperature = TempSignal.valueAsDouble.celsius
     inputs.aimStatorCurrent = StatorCurrentSignal.valueAsDouble.amps
     inputs.aimSupplyCurrent = SupplyCurrentSignal.valueAsDouble.amps
     inputs.aimTorqueCurrent = TorqueCurrentSignal.valueAsDouble.amps
     inputs.aimVoltage = VoltageSignal.valueAsDouble.volts
-
   }
 
   override fun configurePIDVoltage(
-    kP: ProportionalGain<Fraction<Radian, Second>, Volt>,
-    kI: IntegralGain<Fraction<Radian, Second>, Volt>,
-    kD: DerivativeGain<Fraction<Radian, Second>, Volt>
+      kP: ProportionalGain<Fraction<Radian, Second>, Volt>,
+      kI: IntegralGain<Fraction<Radian, Second>, Volt>,
+      kD: DerivativeGain<Fraction<Radian, Second>, Volt>
   ) {
     slot0Configs.kP = kP.inVoltsPerRadiansPerSecond
     slot0Configs.kI = kI.inVoltsPerRadians
     slot0Configs.kD = kD.inVoltsPerRadiansPerSecondPerSecond
-    //i unnnerstand it now
+    // i unnnerstand it now
     Talon.configurator.apply(slot0Configs)
   }
 
   override fun configureFFVoltage(
-    kS: StaticFeedforward<Volt>,
-    kV: VelocityFeedforward<Radian, Volt>,
-    kA: AccelerationFeedforward<Radian, Volt>
+      kS: StaticFeedforward<Volt>,
+      kV: VelocityFeedforward<Radian, Volt>,
+      kA: AccelerationFeedforward<Radian, Volt>
   ) {
     slot0Configs.kS = kS.inVolts
     slot0Configs.kV = kV.inVoltsPerRadianPerSecond
@@ -128,7 +133,8 @@ object AimIOTalon: AimIO {
   }
 
   override fun setVoltage(voltage: ElectricalPotential) {
-    val clampedVoltage = clamp(voltage, -AimConstants.VOLTAGE_COMPENSATION, AimConstants.VOLTAGE_COMPENSATION)
+    val clampedVoltage =
+        clamp(voltage, -AimConstants.VOLTAGE_COMPENSATION, AimConstants.VOLTAGE_COMPENSATION)
     Talon.setVoltage(clampedVoltage.inVolts)
   }
 
@@ -137,8 +143,12 @@ object AimIOTalon: AimIO {
 
     CustomLogger.recordOutput("Aim/SlotUsed", slotUsed)
 
-    Talon.setControl(motionMagicControl.withSlot(slotUsed).withVelocity(Sensor.velocityToRawUnits(velocity)).withAcceleration(Sensor.accelerationToRawUnits(
-      AimConstants.MAX_ACCELERATION)),)
+    Talon.setControl(
+        motionMagicControl
+            .withSlot(slotUsed)
+            .withVelocity(Sensor.velocityToRawUnits(velocity))
+            .withAcceleration(Sensor.accelerationToRawUnits(AimConstants.MAX_ACCELERATION)),
+    )
     // holy hell
   }
 }

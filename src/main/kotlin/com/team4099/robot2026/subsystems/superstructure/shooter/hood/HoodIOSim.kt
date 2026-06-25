@@ -1,16 +1,13 @@
 package com.team4099.robot2026.subsystems.superstructure.shooter.hood
 
 import com.team4099.lib.math.clamp
-import com.team4099.robot2026.config.constants.HoodConstants
 import com.team4099.robot2026.config.constants.Constants
-import com.team4099.robot2026.subsystems.superstructure.shooter.aim.AimIO
+import com.team4099.robot2026.config.constants.HoodConstants
 import edu.wpi.first.math.system.plant.DCMotor
 import edu.wpi.first.math.system.plant.LinearSystemId
 import edu.wpi.first.wpilibj.simulation.FlywheelSim
 import org.team4099.lib.controller.PIDController
 import org.team4099.lib.controller.SimpleMotorFeedforward
-import org.team4099.lib.units.Fraction
-import org.team4099.lib.units.base.Second
 import org.team4099.lib.units.base.amps
 import org.team4099.lib.units.base.inSeconds
 import org.team4099.lib.units.derived.AccelerationFeedforward
@@ -30,42 +27,52 @@ import org.team4099.lib.units.derived.radians
 import org.team4099.lib.units.derived.volts
 import org.team4099.lib.units.perSecond
 
-object HoodIOSim: HoodIO {
-  private val hoodSim: FlywheelSim = FlywheelSim(LinearSystemId.createFlywheelSystem(DCMotor.getKrakenX44(1),
-    HoodConstants.MOMENT_OF_INERTIA.inKilogramsMeterSquared, 1.0/ HoodConstants.GEAR_RATIO,), DCMotor.getKrakenX44(1))
+object HoodIOSim : HoodIO {
+  private val hoodSim: FlywheelSim =
+      FlywheelSim(
+          LinearSystemId.createFlywheelSystem(
+              DCMotor.getKrakenX44(1),
+              HoodConstants.MOMENT_OF_INERTIA.inKilogramsMeterSquared,
+              1.0 / HoodConstants.GEAR_RATIO,
+          ),
+          DCMotor.getKrakenX44(1))
 
-  private val hoodPIDController = PIDController(HoodConstants.PID.SIM_KP, HoodConstants.PID.SIM_KI, HoodConstants.PID.SIM_KD)
-  private var hoodFFController = SimpleMotorFeedforward(HoodConstants.PID.SIM_KS, HoodConstants.PID.SIM_KV, HoodConstants.PID.SIM_KA)
+  private val hoodPIDController =
+      PIDController(HoodConstants.PID.SIM_KP, HoodConstants.PID.SIM_KI, HoodConstants.PID.SIM_KD)
+  private var hoodFFController =
+      SimpleMotorFeedforward(
+          HoodConstants.PID.SIM_KS, HoodConstants.PID.SIM_KV, HoodConstants.PID.SIM_KA)
 
   override fun updateInputs(inputs: HoodIO.HoodInputs) {
     hoodSim.update(Constants.Universal.LOOP_PERIOD_TIME.inSeconds)
     inputs.hoodAcceleration = hoodSim.angularAccelerationRadPerSecSq.radians.perSecond.perSecond
     inputs.hoodVelocity = hoodSim.angularVelocityRadPerSec.radians.perSecond
     inputs.hoodPosition = 0.0.radians
-    //no clue
+    // no clue
     inputs.hoodSupplyCurrent = 0.0.amps
     inputs.hoodStatorCurrent = hoodSim.currentDrawAmps.amps
     inputs.hoodTorqueCurrent = hoodSim.currentDrawAmps.amps.absoluteValue
     inputs.hoodVoltage = hoodSim.inputVoltage.volts
-
   }
 
   override fun setVoltage(voltage: ElectricalPotential) {
-    val clampedVoltage = clamp(voltage, -HoodConstants.VOLTAGE_COMPENSATION, HoodConstants.VOLTAGE_COMPENSATION)
+    val clampedVoltage =
+        clamp(voltage, -HoodConstants.VOLTAGE_COMPENSATION, HoodConstants.VOLTAGE_COMPENSATION)
     hoodSim.setInputVoltage(clampedVoltage.inVolts)
   }
 
   override fun setPosition(position: Angle) {
     HoodIO.HoodInputs.hoodPosition = position.inRadians
-    //idk why this doenst work
+    // idk why this doenst work
   }
+
   override fun configurePIDVoltage(
-    kP: ProportionalGain<Radian, Volt>,
-    kI: IntegralGain<Radian, Volt>,
-    kD: DerivativeGain<Radian, Volt>
+      kP: ProportionalGain<Radian, Volt>,
+      kI: IntegralGain<Radian, Volt>,
+      kD: DerivativeGain<Radian, Volt>
   ) {
     hoodPIDController.setPID(kP, kI, kD)
-    //how to do if not in type
+    // how to do if not in type
     // kP: ProportionalGain<Fraction<Radian, Second>, Volt>,
     // kI: IntegralGain<Fraction<Radian, Second>, Volt>,
     // kD: DerivativeGain<Fraction<Radian, Second>, Volt>
@@ -73,9 +80,9 @@ object HoodIOSim: HoodIO {
   }
 
   override fun configureFFVoltage(
-    kS: StaticFeedforward<Volt>,
-    kV: VelocityFeedforward<Radian, Volt>,
-    kA: AccelerationFeedforward<Radian, Volt>
+      kS: StaticFeedforward<Volt>,
+      kV: VelocityFeedforward<Radian, Volt>,
+      kA: AccelerationFeedforward<Radian, Volt>
   ) {
     hoodFFController = SimpleMotorFeedforward(kS, kV, kA)
   }

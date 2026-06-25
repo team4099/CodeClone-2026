@@ -13,6 +13,11 @@ import com.team4099.lib.math.clamp
 import com.team4099.robot2026.config.constants.AimConstants
 import com.team4099.robot2026.config.constants.Constants
 import com.team4099.robot2026.util.CustomLogger
+import edu.wpi.first.units.measure.AngularAcceleration as WPILibAngularAcceleration
+import edu.wpi.first.units.measure.AngularVelocity as WPILibAngularVelocity
+import edu.wpi.first.units.measure.Current as WPILibCurrent
+import edu.wpi.first.units.measure.Temperature as WPILibTemperature
+import edu.wpi.first.units.measure.Voltage as WPILibVoltage
 import org.team4099.lib.units.base.amps
 import org.team4099.lib.units.base.celsius
 import org.team4099.lib.units.base.inAmperes
@@ -27,33 +32,24 @@ import org.team4099.lib.units.derived.Radian
 import org.team4099.lib.units.derived.StaticFeedforward
 import org.team4099.lib.units.derived.VelocityFeedforward
 import org.team4099.lib.units.derived.Volt
-import org.team4099.lib.units.derived.inAmpsPerRadianPerSecond
-import org.team4099.lib.units.derived.inAmpsPerRadians
-import org.team4099.lib.units.derived.inAmpsPerRadiansPerSecond
-import org.team4099.lib.units.derived.inAmpsPerRadiansPerSecondPerSecond
 import org.team4099.lib.units.derived.inVolts
 import org.team4099.lib.units.derived.inVoltsPerRadian
 import org.team4099.lib.units.derived.inVoltsPerRadianPerSecond
 import org.team4099.lib.units.derived.inVoltsPerRadianPerSecondPerSecond
 import org.team4099.lib.units.derived.inVoltsPerRadianSeconds
-import org.team4099.lib.units.derived.perRotationPerMinute
 import org.team4099.lib.units.derived.rotations
 import org.team4099.lib.units.derived.volts
-import org.team4099.lib.units.inRadiansPerSecond
 import org.team4099.lib.units.perSecond
-import edu.wpi.first.units.measure.AngularAcceleration as WPILibAngularAcceleration
-import edu.wpi.first.units.measure.AngularVelocity as WPILibAngularVelocity
-import edu.wpi.first.units.measure.Current as WPILibCurrent
-import edu.wpi.first.units.measure.Temperature as WPILibTemperature
-import edu.wpi.first.units.measure.Voltage as WPILibVoltage
 
-object HoodIOTalon: HoodIO {
+object HoodIOTalon : HoodIO {
   private val Talon = TalonFX(Constants.Hood.MOTOR_ID)
-  private val motionMagicControl: MotionMagicVelocityTorqueCurrentFOC = MotionMagicVelocityTorqueCurrentFOC(-1000.0)
+  private val motionMagicControl: MotionMagicVelocityTorqueCurrentFOC =
+      MotionMagicVelocityTorqueCurrentFOC(-1000.0)
   private val voltReq = VoltageOut(0.0).withEnableFOC(true)
   private val configs: TalonFXConfiguration = TalonFXConfiguration()
   private val slot0Configs: Slot0Configs = configs.Slot0
-  private val Sensor = ctreAngularMechanismSensor(Talon, AimConstants.GEAR_RATIO, AimConstants.VOLTAGE_COMPENSATION)
+  private val Sensor =
+      ctreAngularMechanismSensor(Talon, AimConstants.GEAR_RATIO, AimConstants.VOLTAGE_COMPENSATION)
 
   private var StatorCurrentSignal: StatusSignal<WPILibCurrent>
   private var TorqueCurrentSignal: StatusSignal<WPILibCurrent>
@@ -63,7 +59,7 @@ object HoodIOTalon: HoodIO {
   private var AccelSignal: StatusSignal<WPILibAngularAcceleration>
   private var VelocitySignal: StatusSignal<WPILibAngularVelocity>
 
-  init{
+  init {
     Talon.clearStickyFaults()
 
     configs.CurrentLimits.SupplyCurrentLimit = AimConstants.SUPPLY_CURRENT_LIMIT.inAmperes
@@ -84,28 +80,35 @@ object HoodIOTalon: HoodIO {
     AccelSignal = Talon.acceleration
   }
 
-  private fun updateSignals(){
-    BaseStatusSignal.refreshAll(SupplyCurrentSignal, StatorCurrentSignal, TorqueCurrentSignal, VelocitySignal, TempSignal, VoltageSignal, AccelSignal)
+  private fun updateSignals() {
+    BaseStatusSignal.refreshAll(
+        SupplyCurrentSignal,
+        StatorCurrentSignal,
+        TorqueCurrentSignal,
+        VelocitySignal,
+        TempSignal,
+        VoltageSignal,
+        AccelSignal)
   }
 
   override fun updateInputs(inputs: HoodIO.HoodInputs) {
     updateSignals()
 
     inputs.hoodVelocity = Sensor.velocity
-    //ggs im so lost
-    inputs.hoodAcceleration = (AccelSignal.valueAsDouble / AimConstants.GEAR_RATIO).rotations.perSecond.perSecond
+    // ggs im so lost
+    inputs.hoodAcceleration =
+        (AccelSignal.valueAsDouble / AimConstants.GEAR_RATIO).rotations.perSecond.perSecond
     inputs.hoodTemperature = TempSignal.valueAsDouble.celsius
     inputs.hoodStatorCurrent = StatorCurrentSignal.valueAsDouble.amps
     inputs.hoodSupplyCurrent = SupplyCurrentSignal.valueAsDouble.amps
     inputs.hoodTorqueCurrent = TorqueCurrentSignal.valueAsDouble.amps
     inputs.hoodVoltage = VoltageSignal.valueAsDouble.volts
-
   }
 
   override fun configurePIDVoltage(
-    kP: ProportionalGain<Radian, Volt>,
-    kI: IntegralGain<Radian, Volt>,
-    kD: DerivativeGain<Radian, Volt>
+      kP: ProportionalGain<Radian, Volt>,
+      kI: IntegralGain<Radian, Volt>,
+      kD: DerivativeGain<Radian, Volt>
   ) {
     slot0Configs.kP = kP.inVoltsPerRadian
     slot0Configs.kI = kI.inVoltsPerRadianSeconds
@@ -114,19 +117,20 @@ object HoodIOTalon: HoodIO {
   }
 
   override fun configureFFVoltage(
-    kS: StaticFeedforward<Volt>,
-    kV: VelocityFeedforward<Radian, Volt>,
-    kA: AccelerationFeedforward<Radian, Volt>
+      kS: StaticFeedforward<Volt>,
+      kV: VelocityFeedforward<Radian, Volt>,
+      kA: AccelerationFeedforward<Radian, Volt>
   ) {
     slot0Configs.kS = kS.inVolts
     slot0Configs.kV = kV.inVoltsPerRadianPerSecond
     slot0Configs.kA = kA.inVoltsPerRadianPerSecondPerSecond
-    //i switched ts myself lwk hella proud
+    // i switched ts myself lwk hella proud
     Talon.configurator.apply(slot0Configs)
   }
 
   override fun setVoltage(voltage: ElectricalPotential) {
-    val clampedVoltage = clamp(voltage, -AimConstants.VOLTAGE_COMPENSATION, AimConstants.VOLTAGE_COMPENSATION)
+    val clampedVoltage =
+        clamp(voltage, -AimConstants.VOLTAGE_COMPENSATION, AimConstants.VOLTAGE_COMPENSATION)
     Talon.setVoltage(clampedVoltage.inVolts)
   }
 
@@ -134,8 +138,9 @@ object HoodIOTalon: HoodIO {
     val slotUsed = 99
     CustomLogger.recordOutput("Hood/slotUsed", slotUsed)
     // val CurrentPosition = HoodIO.HoodInputs.hoodPosition
-    //yo why cant i get access data thru here
-    //anyways logic is just calculate ff + pid and then go to position, i needa figure out how 2 do it tho
+    // yo why cant i get access data thru here
+    // anyways logic is just calculate ff + pid and then go to position, i needa figure out how 2 do
+    // it tho
 
   }
 }
